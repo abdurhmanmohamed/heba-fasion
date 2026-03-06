@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up</title>
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/icons/favicon.png') }}"/>
+
+	<link rel="stylesheet" href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap.min.css') }}">
+	
+	<link rel="stylesheet" href="{{ url_for('static', filename='fonts/font-awesome-4.7.0/css/font-awesome.min.css') }}">
+
+	<link rel="stylesheet" href="{{ url_for('static', filename='fonts/iconic/css/material-design-iconic-font.min.css') }}">
+
+	<link rel="stylesheet" href="{{ url_for('static', filename='fonts/linearicons-v1.0.0/icon-font.min.css') }}">
+
+	<link rel="stylesheet" href="{{ url_for('static', filename='vendor/animate/animate.css') }}">
+
+	<link rel="stylesheet" href="{{ url_for('static', filename='vendor/css-hamburgers/hamburgers.min.css') }}">
+
+	<link rel="stylesheet" href="{{ url_for('static', filename='vendor/animsition/css/animsition.min.css') }}">
+
+	<link rel="stylesheet" href="{{ url_for('static', filename='vendor/select2/select2.min.css') }}">
+
+	<link rel="stylesheet" href="{{ url_for('static', filename='vendor/daterangepicker/daterangepicker.css') }}">
+
+	<link rel="stylesheet" href="{{ url_for('static', filename='vendor/slick/slick.css') }}">
+
+	<link rel="stylesheet" href="{{ url_for('static', filename='vendor/MagnificPopup/magnific-popup.css') }}">
+
+	<link rel="stylesheet" href="{{ url_for('static', filename='vendor/perfect-scrollbar/perfect-scrollbar.css') }}">
+
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/util.css') }}">
+
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  <style>
+    /* Reset & fonts */
+    * { box-sizing: border-box; margin:0; padding:0; font-family: Arial, sans-serif; }
+    body { background:#f2f4f8; display:flex; align-items:center; justify-content:center; min-height:100vh; padding:20px; }
+
+    /* Card */
+    .card {
+      background:white;
+      padding:40px;
+      border-radius:20px;
+      box-shadow:0 20px 60px rgba(0,0,0,0.15);
+      width:100%;
+      max-width:400px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size:1.8rem;
+      margin-bottom:8px;
+      color:#111;
+    }
+
+    p {
+      font-size:0.9rem;
+      color:#666;
+      margin-bottom:20px;
+    }
+
+    /* Form */
+    form { display:grid; gap:18px; }
+
+    .input-group {
+      position:relative;
+    }
+
+    .input-group input {
+      width:100%;
+      padding:14px 12px;
+      border:2px solid #ddd;
+      border-radius:10px;
+      outline:none;
+      font-size:1rem;
+      background:none;
+      transition:.3s;
+    }
+
+    .input-group label {
+      position:absolute;
+      top:50%;
+      left:12px;
+      transform:translateY(-50%);
+      background:white;
+      padding:0 6px;
+      color:#888;
+      font-size:0.85rem;
+      pointer-events:none;
+      transition:.3s;
+    }
+
+    .input-group input:focus,
+    .input-group input:not(:placeholder-shown) {
+      border-color:#007bff;
+    }
+
+    .input-group input:focus + label,
+    .input-group input:not(:placeholder-shown) + label {
+      top:-8px;
+      font-size:0.75rem;
+      color:#007bff;
+    }
+
+    /* Button */
+    button {
+      width:100%;
+      padding:14px;
+      background:#007bff;
+      color:white;
+      border:none;
+      border-radius:10px;
+      font-size:1rem;
+      font-weight:600;
+      cursor:pointer;
+      transition:.3s;
+    }
+
+    button:hover { background:#0056b3; }
+
+    /* Links */
+    .links {
+      margin-top:12px;
+      font-size:0.85rem;
+      color:#666;
+    }
+
+    .links a { color:#007bff; text-decoration:none; }
+    .links a:hover { text-decoration:underline; }
+
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h1 style="font-weight: 500;">Register New Admin</h1>
+    <p style="text-align: right;">إضافه أدمن جديد.</p>
+
+    <form id="signupForm">
+      <div class="input-group">
+        <input type="text" id="name" name="name" placeholder=" " required>
+        <label for="name">Name</label>
+      </div>
+
+      <div class="input-group">
+        <input type="number" id="number" placeholder=" " required>
+        <label for="email">Phone Number</label>
+      </div>
+
+    <!-- Password Field -->
+      <div class="input-group" style="position:relative;">
+    <input type="password" id="password" placeholder=" " required>
+    <label for="password">Password</label>
+    <span class="toggle-password" data-target="password" style="
+        position:absolute;
+        right:12px;
+        top:50%;
+        transform:translateY(-50%);
+        cursor:pointer;
+        color:#888;
+        font-size:0.9rem;
+        user-select:none;
+    ">Show</span>
+      </div>
+      <!-- Confirm Password Field -->
+      <div class="input-group" style="position:relative;">
+            <input type="password" id="confirmPassword" placeholder=" " required>
+            <label for="confirmPassword">Confirm Password</label>
+            <span class="toggle-password" data-target="confirmPassword" style="
+                position:absolute;
+                right:12px;
+                top:50%;
+                transform:translateY(-50%);
+                cursor:pointer;
+                color:#888;
+                font-size:0.9rem;
+                user-select:none;
+            ">Show</span>
+      </div>
+      <button type="submit stext-101">Sign Up</button>
+    </form>
+
+    <div class="links">
+      Already have an account? <a href="{{url_for('login')}}">Sign in</a>
+    </div>
+    <div class="links">
+      <a href="{{url_for('home')}}">Back to Home Page</a>
+    </div>
+  </div>
+
+<script>
+  const toggles = document.querySelectorAll('.toggle-password');
+
+  toggles.forEach(toggle => {
+    toggle.addEventListener('click', () => {
+      const targetId = toggle.getAttribute('data-target');
+      const input = document.getElementById(targetId);
+
+      if(input.type === 'password'){
+        input.type = 'text';
+        toggle.textContent = 'Hide';
+      } else {
+        input.type = 'password';
+        toggle.textContent = 'Show';
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
