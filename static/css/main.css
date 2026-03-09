@@ -1796,6 +1796,50 @@ button.mfp-close {
   cursor: pointer;
 }
 
+.quantity-box{
+    display:flex;
+    align-items:center;
+    width:140px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    overflow:hidden;
+}
+
+.quantity-box button{
+    width:40px;
+    height:40px;
+    border:none;
+    background:#f5f5f5;
+    font-size:20px;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.quantity-box button:hover{
+    background:#717fe0;
+    color:white;
+}
+
+.quantity-input{
+    width:60px;
+    height:40px;
+    border:none;
+    text-align:center;
+    font-size:16px;
+    outline:none;
+}
+.quantity-input::-webkit-inner-spin-button,
+.quantity-input::-webkit-outer-spin-button{
+    -webkit-appearance: none;
+    margin:0;
+}
+.btn-num-product-up-shop-body,
+.btn-num-product-down-shop-body {
+  width: 45px;
+  height: 100%;
+  cursor: pointer;
+}
+
 .num-product {
   width: calc(100% - 90px);
   height: 100%;

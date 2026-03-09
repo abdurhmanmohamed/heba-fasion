@@ -195,6 +195,64 @@
     /*==================================================================
     [ Cart ]*/
     $('.js-show-cart').on('click',function(){
+        $.ajax({
+        url: "/get-cart-items",
+        method: "POST",
+        success: function(response){
+                // update text
+                document.getElementById("total-price").innerText = response.total_price + " E£";
+                $('#cart-items').html('');
+                response.items.forEach(function(item){
+                let cartElement = `
+                <li class="cart-item d-flex align-items-center p-2 mb-2 rounded">
+                    <!-- Product image -->
+                    <div class="cart-item-img">
+                        <img src="${item.img}" alt="IMG" />
+                    </div>
+
+                    <!-- Name + Price -->
+                    <div class="cart-item-info flex-grow-1 ms-2">
+                        <div class="cart-item-name">${item.name}</div>
+                        <div class="cart-item-price">${item.amount} x ${item.price} E£</div>
+                    </div>
+
+                    <!-- Trash button -->
+                    <button class="cart-delete-btn ms-2" data-id="${item.id}">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </li>
+                `;
+                    $('#cart-items').append(cartElement);
+                    $(document).on('click', '.cart-delete-btn', function(){
+                    let item_id = $(this).data('id');
+
+                    // Example: remove item from DOM
+                    $(this).closest('li').remove();
+
+                    // Optional: send request to server
+                    
+                    $.ajax({
+                        url: "/remove-cart-item",
+                        method: "POST",
+                        data: {id: item_id},
+                        success: function(response){
+                            console.log("Item removed from server");
+                        }
+                    });
+                });
+                });
+
+                // update colors
+                // $('#color').html('');
+                // response.colors.forEach(function(color){
+                //     $('#color').append(`<option>${color}</option>`);
+                // });
+
+
+                // show modal
+            }
+
+        })
         $('.js-panel-cart').addClass('show-header-cart');
     });
 
@@ -214,15 +272,54 @@
 
     /*==================================================================
     [ +/- num product ]*/
-    $('.btn-num-product-down').on('click', function(){
-        var numProduct = Number($(this).next().val());
-        if(numProduct > 0) $(this).next().val(numProduct - 1);
-    });
 
-    $('.btn-num-product-up').on('click', function(){
-        var numProduct = Number($(this).prev().val());
-        $(this).prev().val(numProduct + 1);
+ /*==================================================================
+[ +/- num product ]*/
+$('.btn-num-product-down').on('click', function(){
+    let item_id = $(this).data('id');
+    let $input = $(`.num-product[data-id='${item_id}']`);
+    let $totalCell = $(`.total_item_price[data-id='${item_id}']`);
+
+    var numProduct = Number($input.val());
+    if(numProduct > 0) numProduct -= 1;
+    $input.val(numProduct);
+
+    $.ajax({
+        url: "/change-amount",
+        method: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({id: item_id, amount: numProduct}),
+        success: function(response){
+            if(response.removed){
+                $(`tr[data-id='${item_id}']`).remove();
+            } else {
+                $totalCell.text(response.price * numProduct + " E£");
+            }
+            $('.total_price').text(response.total_price + " E£");  // if you have a cart total element
+        }
     });
+});
+
+$('.btn-num-product-up').on('click', function(){
+    let item_id = $(this).data('id');
+    let $input = $(`.num-product[data-id='${item_id}']`);
+    let $totalCell = $(`.total_item_price[data-id='${item_id}']`);
+
+    var numProduct = Number($input.val());
+    numProduct += 1;
+    $input.val(numProduct);
+
+    $.ajax({
+        url: "/change-amount",
+        method: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({id: item_id, amount: numProduct}),
+        success: function(response){
+            $totalCell.text(response.price * numProduct + " E£");
+            $('.total_price').text(response.total_price + " E£");  // update cart total
+        }
+    });
+});
 
     /*==================================================================
     [ Rating ]*/
@@ -268,12 +365,88 @@
     
     /*==================================================================
     [ Show modal1 ]*/
-    $('.js-show-modal1').on('click',function(e){
+    $(document).on('click', '.js-show-modal1', function(e){
         e.preventDefault();
-        $('.js-modal1').addClass('show-modal1');
+
+        let item_id = $(this).data('id');
+
+        $.ajax({
+            url: "/get-item",
+            method: "POST",
+            data: {id: item_id},
+
+            success: function(response){
+                // update text
+
+                if ($('.slick3').hasClass('slick-initialized')) {
+                    $('.slick3').slick('unslick');
+                }
+                $('#name').text(response.name);
+                $('#price').text(response.price + " E£");
+                $('#description').text(response.description);
+
+                // update images
+                $('#all_item_imgs').html('');
+                response.images.forEach(function(img){
+                    let imageElement = `
+                        <div class="item-slick3" data-thumb="${img}">
+                            <div class="wrap-pic-w pos-relative">
+                                <img src="${img}" alt="IMG-PRODUCT" height="420">
+                                <a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04" href="${img}">
+                                    <i class="fa fa-expand"></i>
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                    $('#all_item_imgs').append(imageElement);
+                });
+
+                // refresh slider **once**
+                $('.wrap-slick3').each(function(){
+                    $(this).find('.slick3').slick({
+                        slidesToShow: 1,
+                        slidesToScroll: 1,
+                        fade: true,
+                        infinite: true,
+                        autoplay: false,
+                        autoplaySpeed: 6000,
+
+                        arrows: true,
+                        appendArrows: $(this).find('.wrap-slick3-arrows'),
+                        prevArrow:'<button class="arrow-slick3 prev-slick3"><i class="fa fa-angle-left" aria-hidden="true"></i></button>',
+                        nextArrow:'<button class="arrow-slick3 next-slick3"><i class="fa fa-angle-right" aria-hidden="true"></i></button>',
+
+                        dots: true,
+                        appendDots: $(this).find('.wrap-slick3-dots'),
+                        dotsClass:'slick3-dots',
+                        customPaging: function(slick,index){
+                            var portrait = $(slick.$slides[index]).data('thumb');
+                            return '<img src="'+portrait+'"/><div class="slick3-dot-overlay"></div>';
+                        }
+                    });
+                });
+
+                // update colors
+                $('#color').html('');
+                response.colors.forEach(function(color){
+                    $('#color').append(`<option>${color}</option>`);
+                });
+                document.getElementById('popup').dataset.id = item_id;
+
+
+                // show modal
+                $('.js-modal1').addClass('show-modal1');
+            }
+        });
     });
 
-    $('.js-hide-modal1').on('click',function(){
+    $('.js-hide-modal1').on('click', function(){
+        $('.js-modal1').removeClass('show-modal1');
+    });
+
+
+    $('.js-hide-modal1').on('click', function(){
+
         $('.js-modal1').removeClass('show-modal1');
     });
 

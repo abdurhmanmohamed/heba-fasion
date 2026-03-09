@@ -3,36 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sign Up</title>
-  <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/icons/favicon.png') }}"/>
-
-    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap.min.css') }}">
-
-    <link rel="stylesheet" href="{{ url_for('static', filename='fonts/font-awesome-4.7.0/css/font-awesome.min.css') }}">
-
-    <link rel="stylesheet" href="{{ url_for('static', filename='fonts/iconic/css/material-design-iconic-font.min.css') }}">
-
-    <link rel="stylesheet" href="{{ url_for('static', filename='fonts/linearicons-v1.0.0/icon-font.min.css') }}">
-
-    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/animate/animate.css') }}">
-
-    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/css-hamburgers/hamburgers.min.css') }}">
-
-    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/animsition/css/animsition.min.css') }}">
-
-    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/select2/select2.min.css') }}">
-
-    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/daterangepicker/daterangepicker.css') }}">
-
-    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/slick/slick.css') }}">
-
-    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/MagnificPopup/magnific-popup.css') }}">
-
-    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/perfect-scrollbar/perfect-scrollbar.css') }}">
-
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/util.css') }}">
-
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  <title>Login</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <style>
     /* Reset & fonts */
     * { box-sizing: border-box; margin:0; padding:0; font-family: Arial, sans-serif; }
@@ -127,8 +99,7 @@
         color:#666;
     }
 
-    .links a { color:#007bff; text-decoration:none; }
-    .links a:hover { text-decoration:underline; }
+
 
     </style>
 </head>
@@ -137,21 +108,28 @@
   <div class="card">
     <h1 >Login Admin</h1>
     <p style="text-align: right;">تسجيل دخول أدمن</p>
-
-    <form id="signupForm">
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>Error!</strong> {{messages[0]}}
+            <a type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></a>
+        </div>
+    {% endif %}
+    {% endwith %}
+    <form id="signupForm" action="{{url_for('login')}}" method="POST">
       <div class="input-group">
-        <input type="text" id="name" name="name" placeholder=" " required>
+        <input type="text" id="name" name="name" placeholder=" " required value="{{name}}">
         <label for="name">Name</label>
       </div>
 
       <div class="input-group">
-        <input type="number" id="number" placeholder=" " required>
+        <input type="number" id="number" placeholder=" " required value="{{number}}" name="number">
         <label for="email">Phone Number</label>
       </div>
 
     <!-- Password Field -->
       <div class="input-group" style="position:relative;">
-    <input type="password" id="password" placeholder=" " required>
+    <input value="{{password}}" type="password" id="password" placeholder=" " required name = 'password'>
     <label for="password">Password</label>
     <span class="toggle-password" data-target="password" style="
         position:absolute;
@@ -175,24 +153,6 @@
     </div>
   </div>
 
-<script>
-  const toggles = document.querySelectorAll('.toggle-password');
-
-  toggles.forEach(toggle => {
-    toggle.addEventListener('click', () => {
-      const targetId = toggle.getAttribute('data-target');
-      const input = document.getElementById(targetId);
-
-      if(input.type === 'password'){
-        input.type = 'text';
-        toggle.textContent = 'Hide';
-      } else {
-        input.type = 'password';
-        toggle.textContent = 'Show';
-      }
-    });
-  });
-</script>
 
 </body>
 </html>

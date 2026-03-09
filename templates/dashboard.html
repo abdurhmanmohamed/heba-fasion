@@ -177,9 +177,11 @@
 
 <body>
 	{% include 'header.html' %}
-	<div class="welcome">
-		<h1>Welcome back, Heba</h1>
-	</div>
+	{%if current_user.is_authenticated%}
+		<div class="welcome">
+			<h1>Welcome back, {{current_user.name.capitalize()}}</h1>
+		</div>
+	{%endif%}
 	<div class="dashboard">
 
 		<div class="top-buttons">

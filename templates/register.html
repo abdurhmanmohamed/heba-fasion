@@ -137,21 +137,28 @@
   <div class="card">
     <h1 style="font-weight: 500;">Register New Admin</h1>
     <p style="text-align: right;">إضافه أدمن جديد.</p>
-
-    <form id="signupForm">
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>Error!</strong> {{messages[0]}}
+            <a type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></a>
+        </div>
+    {% endif %}
+    {% endwith %}
+    <form id="signupForm" action="{{url_for('register')}}" method="POST">
       <div class="input-group">
-        <input type="text" id="name" name="name" placeholder=" " required>
+        <input type="text" id="name" name="name" placeholder=" " required value="{{name}}">
         <label for="name">Name</label>
       </div>
 
       <div class="input-group">
-        <input type="number" id="number" placeholder=" " required>
+        <input type="number" id="number" name="number" placeholder=" " required value="{{number}}">
         <label for="email">Phone Number</label>
       </div>
 
     <!-- Password Field -->
       <div class="input-group" style="position:relative;">
-    <input type="password" id="password" placeholder=" " required>
+    <input type="password" id="password" name="password" placeholder=" " required value="{{password}}"> 
     <label for="password">Password</label>
     <span class="toggle-password" data-target="password" style="
         position:absolute;
@@ -166,7 +173,7 @@
       </div>
       <!-- Confirm Password Field -->
       <div class="input-group" style="position:relative;">
-            <input type="password" id="confirmPassword" placeholder=" " required>
+            <input type="password" id="confirmPassword" name="c_password" placeholder=" " required value="{{c_password}}">
             <label for="confirmPassword">Confirm Password</label>
             <span class="toggle-password" data-target="confirmPassword" style="
                 position:absolute;
