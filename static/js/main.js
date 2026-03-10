@@ -236,6 +236,8 @@
                         method: "POST",
                         data: {id: item_id},
                         success: function(response){
+                            $('#total-price').html('');
+                            $('#total-price').text(response.total_price + " E£");
                             console.log("Item removed from server");
                         }
                     });

@@ -991,7 +991,7 @@ Input, textarea : 14px/1.6 '', Arial, sans-serif;
 .header-cart-item-img img {
   width: 100%;
 }
-
+/* 
 .header-cart-item-img::after {
   content: '\e870';
   font-family: Linearicons-Free;
@@ -1019,7 +1019,7 @@ Input, textarea : 14px/1.6 '', Arial, sans-serif;
 
 .header-cart-item-img:hover:after {
   opacity: 1;
-}
+} */
 
 /*---------------------------------------------*/
 .header-cart-item-txt {

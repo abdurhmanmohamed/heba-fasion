@@ -1,8 +1,10 @@
-from flask import Flask, flash
+from datetime import datetime
+
+from flask import Flask, flash,session
 from flask import render_template, url_for, redirect, request,jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import mapped_column, Mapped,DeclarativeBase,relationship
-from sqlalchemy import String, Integer,ForeignKey
+from sqlalchemy import DateTime, String, Integer,ForeignKey
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import LoginManager,UserMixin,login_user, login_required,current_user,logout_user
 
@@ -45,6 +47,20 @@ class ItemImg(db.Model):
     img:Mapped[str] = mapped_column(String(255),)
     item_id:Mapped[int] = mapped_column(Integer, ForeignKey('itemdetails.id'))
     
+
+class Order(db.Model):
+    __tablename__='order'
+    id:Mapped[int] = mapped_column(Integer, primary_key=True)
+    name:Mapped[str] = mapped_column(String(155),nullable=False)
+    phone:Mapped[str] = mapped_column(String(155),nullable=False)
+    second_phone:Mapped[str] = mapped_column(String(155))
+    city:Mapped[str] = mapped_column(String(155),nullable=False)
+    adress:Mapped[str] = mapped_column(String(250),nullable=False)
+    message:Mapped[str] = mapped_column(String(500))
+    created_at = db.Column(DateTime, default=datetime.utcnow)
+    ordered_items = relationship('Cart',backref='order')
+    
+
 class Cart(db.Model):
     __tablename__='cart'
     id:Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -54,6 +70,8 @@ class Cart(db.Model):
     price:Mapped[int] = mapped_column(Integer, nullable=False)
     amount:Mapped[int] = mapped_column(Integer, nullable=False)
     size:Mapped[str] = mapped_column(String(150), nullable=False)
+    session_id:Mapped[str] = mapped_column(String(100), nullable=True)  # Guest session tracking
+    order_id:Mapped[str] = mapped_column(Integer, ForeignKey('order.id'), nullable=True)
     
     def to_dict(self):
         return {
@@ -196,6 +214,8 @@ def userloader(user_id):
 @app.route('/')
 def home():
     items_list = db.session.query(ItemDetails).all()
+    # delete_all_cart_items=[db.session.delete(item) for item in db.session.query(Cart).all()]
+    # db.session.commit()
     return render_template('index.html', items = items_list)
 
 
@@ -206,7 +226,7 @@ def shop():
 
 @app.route('/shoping-cart')
 def shoping_cart():
-    cart_items = db.session.query(Cart).all()
+    cart_items = Cart.query.filter_by(session_id=session['session_id']).all()
     total_price = sum(item.price*item.amount for item in cart_items)
     return render_template('shoping-cart.html', items = cart_items, total_price = total_price)
 
@@ -261,9 +281,32 @@ def register():
     else:
         return render_template('register.html')
 
-@app.route('/checkout')
+@app.route('/checkout', methods = ['POST', 'GET'])
 def check_out():
-    return render_template('checkout.html')
+    if request.method =='POST':
+
+        order = Order(
+            name = request.form['fullname'],
+            phone = request.form['phone'],
+            second_phone = request.form['second-phone'],
+            city = request.form['city'],
+            adress = request.form['adress'],
+            message = request.form['msg'],
+        )
+        db.session.add(order)
+        db.session.commit()
+
+        # 2️⃣ Assign cart items of this session to the order
+        cart_items = Cart.query.filter_by(session_id=session['session_id'], order_id=None).all()
+        for item in cart_items:
+            item.order_id = order.id
+        db.session.commit()
+
+        # 3️⃣ Optional: clear session cart (start fresh)
+        session.pop('session_id', None)
+        return render_template('after-order.html')
+    else:
+        return render_template('checkout.html')
 
 @app.route('/dashboard')
 @login_required
@@ -297,12 +340,20 @@ def add_to_cart():
     item_with_id = db.get_or_404(ItemDetails, item_id)
     item_img = item_with_id.item_imgs[0].img
     
+        # Check if a session ID exists
+    if 'session_id' not in session:
+        import uuid
+        session['session_id'] = str(uuid.uuid4())  # Generate unique session ID
+
+
     cart_prduct = Cart(name = item_with_id.name, 
                        img = item_img,
                        color = data['color'],
                        price= item_with_id.price,
                        amount = int(data['amount']),
-                       size = data['size']
+                       size = data['size'],
+                       session_id=session['session_id'],
+                       order_id=None  # Not assigned yet
                        )
     db.session.add(cart_prduct)
     db.session.commit()
@@ -311,7 +362,7 @@ def add_to_cart():
 
 @app.route('/get-cart-items', methods=['POST'])
 def get_cart_items():
-    cart_items = db.session.query(Cart).all()
+    cart_items =  Cart.query.filter_by(session_id=session['session_id']).all()
     total_price = sum(item.price*item.amount for item in cart_items)
     items = [item.to_dict() for item in cart_items]
     
@@ -326,12 +377,12 @@ def change_item_amount():
     item_id = int(data['id'])
     new_amount = int(data['amount'])
 
-    item_to_change = db.get_or_404(Cart, item_id)
+    item_to_change = Cart.query.filter_by(session_id=session['session_id'],id=item_id).first()
 
     if new_amount == 0:
         db.session.delete(item_to_change)
         db.session.commit()
-        cart_items = db.session.query(Cart).all()
+        cart_items = Cart.query.filter_by(session_id=session['session_id']).all()
         total_price = sum(item.price*item.amount for item in cart_items)
         return jsonify({
             'total_price': total_price,
@@ -341,7 +392,7 @@ def change_item_amount():
     else:
         item_to_change.amount = new_amount
         db.session.commit()
-        cart_items = db.session.query(Cart).all()
+        cart_items = Cart.query.filter_by(session_id=session['session_id']).all()
         total_price = sum(item.price*item.amount for item in cart_items)
         return jsonify({
             'total_price': total_price,
@@ -352,11 +403,15 @@ def change_item_amount():
 @app.route('/remove-cart-item', methods=['POST'])
 def remove_item_amount():
     item_id = request.form['id']
-    item_to_change = db.get_or_404(Cart, item_id)
+    item_to_change = Cart.query.filter_by(session_id=session['session_id'],id=item_id).first()
     db.session.delete(item_to_change)
     db.session.commit()
-    return jsonify({'status': 'success', 'message': 'Data received!'})
-
+    cart_items = Cart.query.filter_by(session_id=session['session_id']).all()
+    total_price = sum(item.price*item.amount for item in cart_items)
+    print(total_price)
+    return jsonify({
+            'total_price': total_price,
+        })
 @app.route('/logout')
 def logout():
     logout_user()
