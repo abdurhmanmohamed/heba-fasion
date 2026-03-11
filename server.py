@@ -340,7 +340,7 @@ def add_to_cart():
     print(data)
     item_with_id = db.get_or_404(ItemDetails, item_id)
     item_img = item_with_id.item_imgs[0].img
-    
+
         # Check if a session ID exists
 
     cart_prduct = Cart(name = item_with_id.name, 
@@ -463,5 +463,25 @@ def ensure_session():
     if 'session_id' not in session:
         import uuid
         session['session_id'] = str(uuid.uuid4())
+
+@app.route('/test', methods = ['POST'])
+def test():
+    item_id = int(request.form['id'])
+    order = db.session.query(Order).filter_by(id = item_id).first()
+    ordered_items = [item.to_dict() for item in order.ordered_items]
+    order_data = {
+            'id': order.id,
+            'username': order.name,
+            'first_number': order.phone,
+            'second_number': order.second_phone,
+            'city': order.city,
+            'adress': order.adress,
+            'message': order.message,
+            'created_at': order.created_at.strftime("%Y-%m-%d %H:%M"),
+            'state': order.state,
+            'ordered_items': ordered_items
+        }
+    print(order_data)
+    return jsonify(order_data)
 if __name__ == '__main__':
     app.run(debug=True)
