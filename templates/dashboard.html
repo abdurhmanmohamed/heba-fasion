@@ -1,381 +1,376 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-	<title>Blog</title>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-
-	<link rel="icon" type="image/png" href="{{ url_for('static', filename='images/icons/favicon.png') }}"/>
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-	<link rel="stylesheet" href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap.min.css') }}">
+  <head>
+    <title>Blog</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 	
-	<link rel="stylesheet" href="{{ url_for('static', filename='fonts/font-awesome-4.7.0/css/font-awesome.min.css') }}">
-
-	<link rel="stylesheet" href="{{ url_for('static', filename='fonts/iconic/css/material-design-iconic-font.min.css') }}">
-
-	<link rel="stylesheet" href="{{ url_for('static', filename='fonts/linearicons-v1.0.0/icon-font.min.css') }}">
-
-	<link rel="stylesheet" href="{{ url_for('static', filename='vendor/animate/animate.css') }}">
-
-	<link rel="stylesheet" href="{{ url_for('static', filename='vendor/css-hamburgers/hamburgers.min.css') }}">
-
-	<link rel="stylesheet" href="{{ url_for('static', filename='vendor/animsition/css/animsition.min.css') }}">
-
-	<link rel="stylesheet" href="{{ url_for('static', filename='vendor/select2/select2.min.css') }}">
-
-	<link rel="stylesheet" href="{{ url_for('static', filename='vendor/daterangepicker/daterangepicker.css') }}">
-
-	<link rel="stylesheet" href="{{ url_for('static', filename='vendor/slick/slick.css') }}">
-
-	<link rel="stylesheet" href="{{ url_for('static', filename='vendor/MagnificPopup/magnific-popup.css') }}">
-
-	<link rel="stylesheet" href="{{ url_for('static', filename='vendor/perfect-scrollbar/perfect-scrollbar.css') }}">
-
-	<link rel="stylesheet" href="{{ url_for('static', filename='css/util.css') }}">
-
-	<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-	<!--===============================================================================================-->
-	<style>
-		body{
-			font-family:Arial;
-			background:#f4f6fb;
-			padding:0;
-		}
-
-		.dashboard{
-			margin-top:120px;
-			max-width:900px;
-			margin-left:15px;
-			margin-right:15px;
-			margin-bottom: 100px;
-		}
-
-
-		.top-buttons{
-			display:flex;
-			gap:10px;
-			
-			margin: auto;
-			margin-bottom:20px;
-			
-		}
-
-		.tab-btn{
-			flex:1;
-			padding:14px;
-			border:none;
-			border-radius:8px;
-			cursor:pointer;
-			background:#e0e3ec;
-			transition:0.3s;
-		}
-
-		.tab-btn.active{
-			background:#4f46e5;
-			color:white;
-		}
-
-		.content-area{
-			position:relative;
-		}
-
-		.content{
-			background:white;
-			padding:20px;
-			border-radius:10px;
-			box-shadow:0 5px 20px rgba(0,0,0,0.1);
-
-			height:400px;
-			overflow-y:auto;
-
-			opacity:0;
-			transform:translateY(20px);
-			transition:0.3s;
-
-			position:absolute;
-			width:100%;
-		}
-
-		.content.active{
-			opacity:1;
-			transform:translateY(0);
-			position:relative;
-		}
-
-		.order-card{
-			display:flex;
-			justify-content:space-between;
-			align-items:center;
-
-			padding:15px;
-			margin-bottom:15px;
-
-			border-radius:10px;
-			background:#f9f9ff;
-			border:1px solid #eee;
-
-			transition:0.25s;
-		}
-
-		.order-card:hover{
-			transform:scale(1.02);
-		}
-
-		.order-info h3{
-			margin:0;
-		}
-
-		.order-info p{
-			margin:4px 0 0;
-			color:#666;
-		}
-
-		.order-side{
-			text-align:right;
-		}
-
-		.price{
-			display:block;
-			font-weight:bold;
-			margin-bottom:8px;
-		}
-
-		.btn{
-			border:none;
-			padding:6px 12px;
-			border-radius:6px;
-			cursor:pointer;
-		}
-
-		.package{
-			background:#f59e0b;
-			color:white;
-		}
-
-		.done{
-			background:#22c55e;
-			color:white;
-		}
-		.content::-webkit-scrollbar{
-			width:8px;
-			height: 5px;
-		}
-
-		.content::-webkit-scrollbar-thumb{
-			background:#4f46e5;
-			border-radius:20px;
-		}
-		.welcome{
-			text-align: center;
-			margin: 0 auto;
-			position: relative;
-			top: 50px;
-			
-		}
-	</style>
-</head>
-
-<body>
-	{% include 'header.html' %}
-	{%if current_user.is_authenticated%}
-		<div class="welcome">
-			<h1>Welcome back, {{current_user.name.capitalize()}}</h1>
-		</div>
-	{%endif%}
-	<div class="dashboard">
-
-		<div class="top-buttons">
-			<button class="tab-btn active" data-target="orders">Orders</button>
-			<button class="tab-btn" data-target="packaged">Packaged</button>
-			<button class="tab-btn" data-target="done">Done</button>
-		</div>
-
-		<div class="content-area">
-
-			<!-- Orders -->
-			<div class="content active" id="orders">
-
-				<div class="order-card">
-					<div class="order-info">
-						<h3>Ahmed Mohamed</h3>
-						<p>2x Burger - 1x Cola</p>
-					</div>
-
-					<div class="order-side">
-						<span class="price">$18</span>
-						<button class="btn package">Package</button>
-					</div>
-				</div>
-
-				<div class="order-card">
-					<div class="order-info">
-						<h3>Omar Ali</h3>
-						<p>Pizza Large</p>
-					</div>
-
-					<div class="order-side">
-						<span class="price">$12</span>
-						<button class="btn package">Package</button>
-					</div>
-				</div>
-
-			</div>
-
-
-			<!-- Packaged -->
-			<div class="content" id="packaged">
-
-				<div class="order-card">
-					<div class="order-info">
-						<h3>Mahmoud</h3>
-						<p>Chicken Sandwich</p>
-					</div>
-
-					<div class="order-side">
-						<span class="price">$9</span>
-						<button class="btn done">Done</button>
-					</div>
-				</div>
-
-			</div>
-
-
-			<!-- Done -->
-			<div class="content" id="done">
-				<p>All completed orders will appear here.</p>
-			</div>
-
-		</div>
-
-	</div>
-	{% include "footer.html" %}
-
-	<script>
-		const buttons = document.querySelectorAll(".tab-btn")
-		const contents = document.querySelectorAll(".content")
-
-		const ordersContainer = document.getElementById("orders")
-		const packagedContainer = document.getElementById("packaged")
-		const doneContainer = document.getElementById("done")
-
-		// switch tabs
-		buttons.forEach(button=>{
-		button.addEventListener("click",()=>{
-
-		buttons.forEach(btn=>btn.classList.remove("active"))
-		button.classList.add("active")
-
-		contents.forEach(content=>content.classList.remove("active"))
-
-		document.getElementById(button.dataset.target).classList.add("active")
-
-		})
-		})
-
-
-		// create order card
-		function createOrder(name, items, price){
-
-		const card = document.createElement("div")
-		card.className="order-card"
-
-		card.innerHTML = `
-		<div class="order-info">
-		<a role="button">
-		<h3>${name}</h3>
-		<p>${items}</p>
-		</a>
-		</div>
-
-		<div class="order-side">
-		<span class="price">$${price}</span>
-		<button class="btn package">Package</button>
-		</div>
-		`
-
-		// move to packaged
-		card.querySelector(".package").onclick = ()=>{
-
-		card.querySelector(".package").remove()
-
-		const doneBtn = document.createElement("button")
-		doneBtn.className="btn done"
-		doneBtn.textContent="Done"
-
-		doneBtn.onclick=()=>{
-		doneBtn.remove()
-		doneContainer.appendChild(card)
-		}
-
-		card.querySelector(".order-side").appendChild(doneBtn)
-
-		packagedContainer.appendChild(card)
-
-		}
-
-		return card
-		}
-
-
-		// sample orders
-		ordersContainer.appendChild(createOrder("Ahmed Mohamed","2x Burger - Cola",18))
-		ordersContainer.appendChild(createOrder("Omar Ali","Pizza Large",12))
-		ordersContainer.appendChild(createOrder("Mahmoud Hassan","Chicken Sandwich",9))
-	</script>
-<!-- 
-	<script src="script.js"></script>
-	<script>
-		const buttons = document.querySelectorAll(".tab-btn")
-		const contents = document.querySelectorAll(".content")
-
-		buttons.forEach(button => {
-
-			button.addEventListener("click", () => {
-
-				buttons.forEach(btn => btn.classList.remove("active"))
-				button.classList.add("active")
-
-				contents.forEach(content => content.classList.remove("active"))
-
-				const target = document.getElementById(button.dataset.target)
-				target.classList.add("active")
-
-			})
-
-		})
-	</script> -->
-	
-	
-<!--===============================================================================================-->	
-	<script src="{{url_for('static', filename='vendor/jquery/jquery-3.2.1.min.js')}}"></script>
-<!--===============================================================================================-->
-	<script src="{{url_for('static', filename='vendor/animsition/js/animsition.min.js') }} "></script>
-<!--===============================================================================================-->
-	<script src="{{url_for('static', filename='vendor/bootstrap/js/popper.js') }}"></script>
-	<script src="{{url_for('static', filename='vendor/bootstrap/js/bootstrap.min.js') }}"></script>
-<!--===============================================================================================-->
-	<script src="{{url_for('static', filename='vendor/select2/select2.min.js') }}"></script>
-<!--===============================================================================================-->
-	<script src="{{url_for('static', filename='vendor/daterangepicker/moment.min.js') }}"></script>
-	<script src="{{url_for('static', filename='vendor/daterangepicker/daterangepicker.js') }}"></script>
-<!--===============================================================================================-->
-	<script src="{{url_for('static', filename='vendor/slick/slick.min.js') }}"></script>
-	<script src="{{url_for('static', filename='js/slick-custom.js') }}"></script>
-<!--===============================================================================================-->
-	<script src="{{url_for('static', filename='vendor/parallax100/parallax100.js') }}"></script>
-	<script>
-        $('.parallax100').parallax100();
-	</script>
-<!--===============================================================================================-->
-	<script src="{{url_for('static', filename='vendor/MagnificPopup/jquery.magnific-popup.min.js') }}"></script>
-		<script src="{{url_for('static', filename='vendor/isotope/isotope.pkgd.min.js') }}"></script>
-<!--===============================================================================================-->
-	<script src="{{url_for('static', filename='vendor/sweetalert/sweetalert.min.js') }}"></script>
-<!--===============================================================================================-->
-	<script src="{{url_for('static', filename='vendor/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
-<!--===============================================================================================-->
-	<script src="{{url_for('static', filename='js/main.js') }}"></script>
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-</body>
-
+    <link
+      rel="icon"
+      type="image/png"
+      href="{{ url_for('static', filename='images/icons/favicon.png') }}"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap.min.css') }}"
+    />
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='fonts/font-awesome-4.7.0/css/font-awesome.min.css') }}"
+    />
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='fonts/iconic/css/material-design-iconic-font.min.css') }}"
+    />
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='fonts/linearicons-v1.0.0/icon-font.min.css') }}"
+    />
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='vendor/animate/animate.css') }}"
+    />
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='vendor/css-hamburgers/hamburgers.min.css') }}"
+    />
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='vendor/animsition/css/animsition.min.css') }}"
+    />
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='vendor/select2/select2.min.css') }}"
+    />
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='vendor/daterangepicker/daterangepicker.css') }}"
+    />
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='vendor/slick/slick.css') }}"
+    />
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='vendor/MagnificPopup/magnific-popup.css') }}"
+    />
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='vendor/perfect-scrollbar/perfect-scrollbar.css') }}"
+    />
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/util.css') }}"
+    />
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/main.css') }}"
+    />
+    <!--===============================================================================================-->
+    <style>
+      body {
+        font-family: Arial;
+        background: #f4f6fb;
+        padding: 0;
+      }
+
+      .dashboard {
+        margin-top: 120px;
+        max-width: 900px;
+        margin-left: 15px;
+        margin-right: 15px;
+        margin-bottom: 100px;
+      }
+
+      .top-buttons {
+        display: flex;
+        gap: 10px;
+
+        margin: auto;
+        margin-bottom: 20px;
+      }
+
+      .tab-btn {
+        flex: 1;
+        padding: 14px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        background: #e0e3ec;
+        transition: 0.3s;
+      }
+
+      .tab-btn.active {
+        background: #4f46e5;
+        color: white;
+      }
+
+      .content-area {
+        position: relative;
+      }
+
+      .content {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+
+        height: 400px;
+        overflow-y: auto;
+
+        opacity: 0;
+        transform: translateY(20px);
+        transition: 0.3s;
+
+        position: absolute;
+        width: 100%;
+      }
+
+      .content.active {
+        opacity: 1;
+        transform: translateY(0);
+        position: relative;
+      }
+
+      .order-card {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        padding: 15px;
+        margin-bottom: 15px;
+
+        border-radius: 10px;
+        background: #f9f9ff;
+        border: 1px solid #eee;
+
+        transition: 0.25s;
+      }
+
+      .order-card:hover {
+        transform: scale(1.02);
+      }
+
+      .order-info h3 {
+        margin: 0;
+      }
+
+      .order-info p {
+        margin: 4px 0 0;
+        color: #666;
+      }
+
+      .order-side {
+        text-align: right;
+      }
+
+      .price {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 8px;
+      }
+
+      .btn {
+        border: none;
+        padding: 6px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+
+      .package {
+        background: #f59e0b;
+        color: white;
+      }
+
+      .done {
+        background: #22c55e;
+        color: white;
+      }
+      .content::-webkit-scrollbar {
+        width: 8px;
+        height: 5px;
+      }
+
+      .content::-webkit-scrollbar-thumb {
+        background: #4f46e5;
+        border-radius: 20px;
+      }
+      .welcome {
+        text-align: center;
+        margin: 0 auto;
+        position: relative;
+        top: 50px;
+      }
+    </style>
+  </head>
+
+  <body>
+    {% include 'header.html' %} {% if current_user.is_authenticated %}
+    <div class="welcome">
+      <h1>Welcome back, {{ current_user.name.capitalize() }}</h1>
+    </div>
+    {% endif %}
+
+    <div class="dashboard">
+      <div class="top-buttons">
+        <button
+          class="tab-btn active"
+          data-target="orders"
+          onclick="getOrders('order')"
+        >
+          Orders
+        </button>
+        <button
+          class="tab-btn"
+          data-target="packaged"
+          onclick="getOrders('packaged')"
+        >
+          Packaged
+        </button>
+        <button class="tab-btn" data-target="done" onclick="getOrders('done')">
+          Done
+        </button>
+      </div>
+
+      <div class="content-area">
+        <div class="content active" id="orders"></div>
+        <div class="content" id="packaged"></div>
+        <div class="content" id="done">
+          <p>All completed orders will appear here.</p>
+        </div>
+      </div>
+    </div>
+
+    {% include 'footer.html' %}
+
+    <!-- JS Libraries -->
+	 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename='vendor/jquery/jquery-3.2.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/animsition/js/animsition.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/select2/select2.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/daterangepicker/moment.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/daterangepicker/daterangepicker.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/slick/slick.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/slick-custom.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/parallax100/parallax100.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/MagnificPopup/jquery.magnific-popup.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/isotope/isotope.pkgd.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/sweetalert/sweetalert.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+    <script>
+      // Initialize parallax
+      $(".parallax100").parallax100();
+
+      // Tab switching
+      const buttons = document.querySelectorAll(".tab-btn");
+      const contents = document.querySelectorAll(".content");
+
+      buttons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          buttons.forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          contents.forEach((c) => c.classList.remove("active"));
+          document.getElementById(btn.dataset.target).classList.add("active");
+        });
+      });
+
+      const ordersContainer = document.getElementById("orders");
+      const packagedContainer = document.getElementById("packaged");
+      const doneContainer = document.getElementById("done");
+
+      function createOrder(order) {
+        const itemsText = order.ordered_items
+          .map((i) => `${i.amount}x ${i.name}`)
+          .join(" - ");
+        const total = order.ordered_items.reduce(
+          (sum, i) => sum + i.price * i.amount,
+          0,
+        );
+
+        const card = document.createElement("div");
+        card.className = "order-card";
+        card.dataset.id = order.id;
+        card.innerHTML = `
+          <div class="order-info">
+            <a role="button">
+              <h3>${order.username}</h3>
+              <p>${itemsText}</p>
+            </a>
+          </div>
+          <div class="order-side">
+            <span class="price">${total} E£</span>
+          </div>
+        `;
+
+        if (order.state === "order") {
+          const btn = document.createElement("button");
+          btn.className = "btn package";
+          btn.textContent = "Package";
+          btn.onclick = () => updateOrderState(order.id, "packaged");
+          card.querySelector(".order-side").appendChild(btn);
+        }
+
+        if (order.state === "packaged") {
+          const btn = document.createElement("button");
+          btn.className = "btn done";
+          btn.textContent = "Done";
+          btn.onclick = () => updateOrderState(order.id, "done");
+          card.querySelector(".order-side").appendChild(btn);
+        }
+
+        return card;
+      }
+
+      function updateOrderState(id, newState) {
+        $.post("/update-order-state", { id, state: newState }, () => {
+          getOrders("order");
+          getOrders("packaged");
+          getOrders("done");
+        });
+      }
+
+      function getOrders(state) {
+        let container =
+          state === "order"
+            ? ordersContainer
+            : state === "packaged"
+              ? packagedContainer
+              : doneContainer;
+        container.innerHTML = "";
+
+        $.post("/get-orders", { state }, function (response) {
+          response.orders.forEach((order) =>
+            container.appendChild(createOrder(order)),
+          );
+        });
+      }
+
+      window.onload = () => {
+        getOrders("order");
+        getOrders("packaged");
+        getOrders("done");
+      };
+    </script>
+  </body>
 </html>

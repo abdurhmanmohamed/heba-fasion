@@ -58,6 +58,7 @@ class Order(db.Model):
     adress:Mapped[str] = mapped_column(String(250),nullable=False)
     message:Mapped[str] = mapped_column(String(500))
     created_at = db.Column(DateTime, default=datetime.utcnow)
+    state:Mapped[str] = mapped_column(String(155),default='order')
     ordered_items = relationship('Cart',backref='order')
     
 
@@ -341,10 +342,6 @@ def add_to_cart():
     item_img = item_with_id.item_imgs[0].img
     
         # Check if a session ID exists
-    if 'session_id' not in session:
-        import uuid
-        session['session_id'] = str(uuid.uuid4())  # Generate unique session ID
-
 
     cart_prduct = Cart(name = item_with_id.name, 
                        img = item_img,
@@ -362,6 +359,7 @@ def add_to_cart():
 
 @app.route('/get-cart-items', methods=['POST'])
 def get_cart_items():
+
     cart_items =  Cart.query.filter_by(session_id=session['session_id']).all()
     total_price = sum(item.price*item.amount for item in cart_items)
     items = [item.to_dict() for item in cart_items]
@@ -392,6 +390,7 @@ def change_item_amount():
     else:
         item_to_change.amount = new_amount
         db.session.commit()
+
         cart_items = Cart.query.filter_by(session_id=session['session_id']).all()
         total_price = sum(item.price*item.amount for item in cart_items)
         return jsonify({
@@ -402,6 +401,7 @@ def change_item_amount():
 
 @app.route('/remove-cart-item', methods=['POST'])
 def remove_item_amount():
+
     item_id = request.form['id']
     item_to_change = Cart.query.filter_by(session_id=session['session_id'],id=item_id).first()
     db.session.delete(item_to_change)
@@ -412,10 +412,56 @@ def remove_item_amount():
     return jsonify({
             'total_price': total_price,
         })
-@app.route('/logout')
-def logout():
-    logout_user()
-    return redirect(url_for('home'))
-    
+
+@app.route('/get-orders', methods=['POST'])
+def get_orders():
+
+    state = request.form['state']
+
+    orders_list = Order.query.filter_by(state=state).all()
+
+    orders = []
+
+    for order in orders_list:
+        ordered_items = [item.to_dict() for item in order.ordered_items]
+        data = {
+            'id': order.id,
+            'username': order.name,
+            'first_number': order.phone,
+            'second_number': order.second_phone,
+            'city': order.city,
+            'adress': order.adress,
+            'message': order.message,
+            'created_at': order.created_at.strftime("%Y-%m-%d %H:%M"),
+            'state': order.state,
+            'ordered_items': ordered_items
+        }
+
+        orders.append(data)
+    print(orders)
+
+    return jsonify({'orders': orders})
+
+
+@app.route('/update-order-state', methods=['POST'])
+def update_order_state():
+
+    order_id = request.form.get("id")
+    new_state = request.form.get("state")
+
+    order = Order.query.get(order_id)
+
+    if order:
+        order.state = new_state
+        db.session.commit()
+        return jsonify({"success": True})
+
+    return jsonify({"success": False})
+
+@app.before_request
+def ensure_session():
+    if 'session_id' not in session:
+        import uuid
+        session['session_id'] = str(uuid.uuid4())
 if __name__ == '__main__':
     app.run(debug=True)
