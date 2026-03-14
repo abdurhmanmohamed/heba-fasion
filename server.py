@@ -1,17 +1,27 @@
 from datetime import datetime
+# server.py
 
+import base64
+import uuid
+import imghdr
+import requests
 from flask import Flask, flash,session
 from flask import render_template, url_for, redirect, request,jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import mapped_column, Mapped,DeclarativeBase,relationship
 from sqlalchemy import DateTime, String, Integer,ForeignKey
 from werkzeug.security import check_password_hash, generate_password_hash
+
 from flask_login import LoginManager,UserMixin,login_user, login_required,current_user,logout_user
+
 
 app= Flask(__name__)
 login_manager = LoginManager(app)
 app.secret_key='abdomohamed'
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
+SUPABASE_URL = "https://wmkfvadfdnjpmdurnudb.supabase.co"
+SUPABASE_KEY = "sb_publishable_aCVfYc4k1oCSUl3twmfjVA_iSlR3gy6"
+BUCKET = "items"
 login_manager.login_view = 'login'
 class Base(DeclarativeBase):
     pass
@@ -31,6 +41,7 @@ class ItemDetails(db.Model):
     name:Mapped[str] = mapped_column(String(150), nullable=False)
     description:Mapped[str] = mapped_column(String(500), nullable=False)
     price:Mapped[int] = mapped_column(Integer, nullable=False)
+    visability:Mapped[int] = mapped_column(Integer, nullable=False,default=1)
     item_colors = relationship('ItemColor',backref='deltails')
     item_imgs = relationship('ItemImg',backref='deltails')
 
@@ -214,7 +225,7 @@ def userloader(user_id):
 
 @app.route('/')
 def home():
-    items_list = db.session.query(ItemDetails).all()
+    items_list = db.session.query(ItemDetails).filter_by(visability=1).all()
     # delete_all_cart_items=[db.session.delete(item) for item in db.session.query(Cart).all()]
     # db.session.commit()
     return render_template('index.html', items = items_list)
@@ -222,7 +233,7 @@ def home():
 
 @app.route('/shoping')
 def shop():
-    items = db.session.query(ItemDetails).all()
+    items = db.session.query(ItemDetails).filter_by(visability=1).all()
     return render_template('shop.html', items = items)
 
 @app.route('/shoping-cart')
@@ -230,6 +241,7 @@ def shoping_cart():
     cart_items = Cart.query.filter_by(session_id=session['session_id']).all()
     total_price = sum(item.price*item.amount for item in cart_items)
     return render_template('shoping-cart.html', items = cart_items, total_price = total_price)
+
 
 @app.route('/login',methods=['POST', 'GET'])
 def login():
@@ -339,8 +351,7 @@ def add_to_cart():
     item_id = int(data['id'])
     print(data)
     item_with_id = db.get_or_404(ItemDetails, item_id)
-    item_img = item_with_id.item_imgs[0].img
-
+    item_img = item_with_id.item_imgs[0].img if item_with_id.item_imgs else "default.png"
         # Check if a session ID exists
 
     cart_prduct = Cart(name = item_with_id.name, 
@@ -417,8 +428,7 @@ def remove_item_amount():
 def get_orders():
 
     state = request.form['state']
-
-    orders_list = Order.query.filter_by(state=state).all()
+    orders_list = Order.query.filter_by(state=state).all()[::-1]
 
     orders = []
 
@@ -464,8 +474,8 @@ def ensure_session():
         import uuid
         session['session_id'] = str(uuid.uuid4())
 
-@app.route('/test', methods = ['POST'])
-def test():
+@app.route('/get-order-data', methods = ['POST'])
+def get_order_data():
     item_id = int(request.form['id'])
     order = db.session.query(Order).filter_by(id = item_id).first()
     ordered_items = [item.to_dict() for item in order.ordered_items]
@@ -483,5 +493,69 @@ def test():
         }
     print(order_data)
     return jsonify(order_data)
+
+# add new item
+@app.route("/admin/add-item", methods=["POST"])
+def add_item():
+
+    data = request.json
+
+    name = data["name"]
+    price = data["price"]
+    description = data["description"]
+    colors = data["colors"]
+
+    # transform the imgs from the bata64 in to images with name and then post it into superbase storage and then same the public url
+    image_links = []
+    for img in data["images"]:
+        header, encoded = img.split(",", 1)
+        binary = base64.b64decode(encoded)
+        ext = imghdr.what(None, binary) or "png"
+        filename = f"{uuid.uuid4()}.{ext}"
+
+        url = f"{SUPABASE_URL}/storage/v1/object/{BUCKET}/{filename}"
+        headers = {
+            "Authorization": f"Bearer {SUPABASE_KEY}",
+            "apikey": SUPABASE_KEY,
+            "Content-Type": f"image/{ext}"
+        }
+
+        r = requests.put(url, headers=headers, data=binary)
+        if r.status_code not in [200, 201]:
+            raise Exception(f"Upload failed: {r.text}")
+
+        # Public URL
+        public_url = f"{SUPABASE_URL}/storage/v1/object/public/{BUCKET}/{filename}"
+        image_links.append(public_url)
+
+   
+    new_item = ItemDetails(name=name, price=price, description=description)
+    db.session.add(new_item)
+    db.session.commit()  # commit once to get new_item.id
+
+    # Add colors
+    for color in colors:
+        new_item_color = ItemColor(color=color, item_id=new_item.id)
+        db.session.add(new_item_color)
+
+    # Add images
+    for link in image_links:
+        new_item_img = ItemImg(img=link, item_id=new_item.id)
+        db.session.add(new_item_img)
+
+    db.session.commit()  # final commit after adding all
+    print(name, price, description,colors,image_links)
+    return jsonify({"status":"ok"})
+
+@app.route('/delete-item',methods=['POST'])
+def delete():
+    data = request.get_json()
+    id = data["id"]
+    targeted_item=db.get_or_404(ItemDetails,id)
+    targeted_item.visability =0
+    print(id)
+    db.session.commit()
+
+    return redirect(url_for('home'))
 if __name__ == '__main__':
     app.run(debug=True)

@@ -154,6 +154,12 @@ Input, textarea : 14px/1.6 '', Arial, sans-serif;
 
 /*//////////////////////////////////////////////////////////////////
 [ BUTTON BACK TO TOP ]*/
+body *:lang(ar),
+body *:lang(arb),
+body *[dir="rtl"] {
+    font-family: 'Cairo', Arial, sans-serif !important;
+    direction: rtl;
+}
 .btn-back-to-top {
   display: none;
   position: fixed;

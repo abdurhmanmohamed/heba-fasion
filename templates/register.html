@@ -33,11 +33,16 @@
 	<link rel="stylesheet" href="{{ url_for('static', filename='css/util.css') }}">
 
 	<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     /* Reset & fonts */
     * { box-sizing: border-box; margin:0; padding:0; font-family: Arial, sans-serif; }
     body { background:#f2f4f8; display:flex; align-items:center; justify-content:center; min-height:100vh; padding:20px; }
-
+    body *:lang(ar),
+    body *:lang(arb),
+    body *[dir="rtl"] {
+        font-family: 'Cairo', Arial, sans-serif !important;
+        direction: rtl;}
     /* Card */
     .card {
       background:white;

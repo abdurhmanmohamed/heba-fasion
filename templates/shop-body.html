@@ -1,272 +1,756 @@
+<style>
+  .js-admin-modal {
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.3s;
+  }
+
+  .show-admin-modal {
+    opacity: 1;
+    visibility: visible;
+  }
+  .wrap-modal1.js-admin-modal {
+    backdrop-filter: blur(6px);
+    background: rgba(0, 0, 0, 0.35);
+  }
+  .wrap-modal1.js-admin-modal {
+    backdrop-filter: blur(6px);
+    background: rgba(0, 0, 0, 0.35);
+  }
+  .bg0.how-pos3-parent {
+    background: white;
+    border-radius: 18px;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
+    padding-top: 50px !important;
+  }
+  #thumbContainer {
+    margin-top: 10px;
+  }
+
+  #thumbContainer img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid #eee;
+    cursor: pointer;
+    transition: 0.25s;
+  }
+
+  #thumbContainer img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  #imageInput {
+    border-radius: 10px;
+    padding: 8px;
+    border: 1px dashed #bbb;
+    background: #fafafa;
+    transition: 0.25s;
+  }
+
+  #imageInput:hover {
+    border-color: black;
+    background: #f5f5f5;
+  }
+  .form-control {
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    padding: 10px 12px;
+    transition: 0.2s;
+    font-size: 14px;
+  }
+
+  .form-control:focus {
+    border-color: #111;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+  }
+  #sizeContainer span,
+  #colorContainer span {
+    background: #f1f1f1;
+    border-radius: 20px;
+    padding: 6px 12px;
+    margin: 4px;
+    display: inline-flex;
+    align-items: center;
+    font-size: 13px;
+    font-weight: 500;
+    transition: 0.2s;
+  }
+
+  #sizeContainer span:hover,
+  #colorContainer span:hover {
+    background: #e7e7e7;
+  }
+  #sizeContainer span span,
+  #colorContainer span span {
+    margin-left: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    color: #666;
+  }
+
+  #sizeContainer span span:hover,
+  #colorContainer span span:hover {
+    color: red;
+  }
+  #addSize,
+  #addColor {
+    border-radius: 10px;
+    font-weight: 500;
+    padding: 8px 16px;
+    transition: 0.25s;
+  }
+
+  #addSize:hover,
+  #addColor:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+  }
+  .how-pos3 img {
+    width: 18px;
+    opacity: 0.6;
+    transition: 0.2s;
+  }
+
+  .how-pos3:hover img {
+    opacity: 1;
+    transform: rotate(90deg);
+  }
+  .p-r-50 {
+    padding-right: 35px !important;
+  }
+  #saveItem {
+    background: #717fe0;
+    border: none;
+    border-radius: 12px;
+    padding: 13px;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    color: white;
+    transition: all 0.25s ease;
+    box-shadow: 0 6px 18px rgba(113, 127, 224, 0.35);
+  }
+
+  #saveItem:hover {
+    background: #5d6bda;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 26px rgba(113, 127, 224, 0.45);
+  }
+
+  #saveItem:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 12px rgba(113, 127, 224, 0.3);
+  }
+  #saveItem {
+    background: #717fe0;
+    border: none;
+    border-radius: 12px;
+    padding: 13px;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    color: white;
+    transition: all 0.25s ease;
+    box-shadow: 0 6px 18px rgba(113, 127, 224, 0.35);
+  }
+
+  #saveItem:hover {
+    background: #5d6bda;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 26px rgba(113, 127, 224, 0.45);
+  }
+
+  #saveItem:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 12px rgba(113, 127, 224, 0.3);
+  }
+  #imageInput::file-selector-button {
+    background: #717fe0;
+    border: none;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 8px;
+    margin-right: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  #imageInput::file-selector-button:hover {
+    background: #5d6bda;
+  }
+</style>
 <div class="bg0 m-t-23 p-b-140 pt-5">
-		<div class="container">
-			<div class="flex-w flex-sb-m p-b-52">
-				<div class="flex-w flex-l-m filter-tope-group m-tb-10 ">
-					<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 how-active1" data-filter="*">
-						All Products
-					</button>
-					<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".women">
-						Women
-					</button>
-					<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".men">
-						Men
-					</button>
-					<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".bag">
-						Bag
-					</button>
-					<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".shoes">
-						Shoes
-					</button>
-					<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".watches">
-						Watches
-					</button>
-				</div>
+  <div class="container">
+    <div class="flex-w flex-sb-m p-b-52">
+      <div class="flex-w flex-l-m filter-tope-group m-tb-10">
+        <button
+          class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 how-active1"
+          data-filter="*"
+        >
+          All Products
+        </button>
+        <button
+          class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5"
+          data-filter=".women"
+        >
+          Women
+        </button>
+        <button
+          class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5"
+          data-filter=".men"
+        >
+          Men
+        </button>
+        <button
+          class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5"
+          data-filter=".bag"
+        >
+          Bag
+        </button>
+        <button
+          class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5"
+          data-filter=".shoes"
+        >
+          Shoes
+        </button>
+        <button
+          class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5"
+          data-filter=".watches"
+        >
+          Watches
+        </button>
+      </div>
 
-				<div class="flex-w flex-c-m m-tb-10">
+      <div class="flex-w flex-c-m m-tb-10">
+        <div
+          class="flex-c-m stext-106 cl6 size-105 bor4 pointer hov-btn3 trans-04 m-tb-4 js-show-search"
+        >
+          <i class="icon-search cl2 m-r-6 fs-15 trans-04 zmdi zmdi-search"></i>
+          <i
+            class="icon-close-search cl2 m-r-6 fs-15 trans-04 zmdi zmdi-close dis-none"
+          ></i>
+          Search
+        </div>
+      </div>
 
-					<div class="flex-c-m stext-106 cl6 size-105 bor4 pointer hov-btn3 trans-04 m-tb-4 js-show-search">
-						<i class="icon-search cl2 m-r-6 fs-15 trans-04 zmdi zmdi-search"></i>
-						<i class="icon-close-search cl2 m-r-6 fs-15 trans-04 zmdi zmdi-close dis-none"></i>
-						Search
-					</div>
-				</div>
-				
-				<!-- Search product -->
-				<div class="dis-none panel-search w-full p-t-10 p-b-15">
-					<div class="bor8 dis-flex p-l-15">
-						<button class="size-113 flex-c-m fs-16 cl2 hov-cl1 trans-04">
-							<i class="zmdi zmdi-search"></i>
-						</button>
-						<input class="mtext-107 cl2 size-114 plh2 p-r-15" type="text" name="search-product" placeholder="Search">
-					</div>	
-				</div>
-			</div>
-            <div class="row isotope-grid">
-				{% for item in items: %}
-					<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women rounded-2" id = 'popup'>
-						<!-- Block2 -->
-						<div class="block2 rounded-2">
+      <!-- Search product -->
+      <div class="dis-none panel-search w-full p-t-10 p-b-15">
+        <div class="bor8 dis-flex p-l-15">
+          <button class="size-113 flex-c-m fs-16 cl2 hov-cl1 trans-04">
+            <i class="zmdi zmdi-search"></i>
+          </button>
+          <input
+            class="mtext-107 cl2 size-114 plh2 p-r-15"
+            type="text"
+            name="search-product"
+            placeholder="Search"
+          />
+        </div>
+      </div>
+    </div>
+    <div class="row isotope-grid">
+      {% for item in items: %}
+      <div
+        class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women rounded-2"
+        id="popup"
+      >
+        <!-- Block2 -->
+        <div class="block2 rounded-2">
+          <div class="block2-pic hov-img0 rounded-2">
+            <img
+              src="{{item.item_imgs[0].img}}"
+              alt="IMG-PRODUCT"
+              height="400"
+            />
 
-							<div class="block2-pic hov-img0 rounded-2">
-								<img src="{{item.item_imgs[0].img}}" alt="IMG-PRODUCT" height="400">
+            <a
+              href="#"
+              class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1"
+              data-id="{{ item.id }}"
+            >
+              Quick View
+            </a>
+          </div>
 
-								<a href="#" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1 " data-id="{{ item.id }}">
-									Quick View
-								</a>
-							</div>
+          <div class="block2-txt flex-w flex-t p-t-14">
+            <div class="block2-txt-child1 flex-col-l">
+              <a
+                href=""
+                class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6 trans-04 js-show-modal1"
+                style="color: rgb(51, 50, 50); font-size: 1.5rem"
+              >
+                {{item.name}}
+              </a>
 
-							<div class="block2-txt flex-w flex-t p-t-14">
-								<div class="block2-txt-child1 flex-col-l ">
-									<a href="" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6 trans-04 js-show-modal1" style="color: rgb(51, 50, 50); font-size: 1.5rem;">
-										{{item.name}}
-									</a>
+              <span
+                class="stext-105 cl3"
+                style="color: rgb(58, 55, 55); font-size: 1.1rem"
+              >
+                {{item.price}} E£
+              </span>
+            </div>
 
-									<span class="stext-105 cl3" style="color: rgb(58, 55, 55); font-size: 1.1rem;">
-										{{item.price}} E£
-									</span>
-								</div>
+            <div class="block2-txt-child2 flex-r p-t-3">
+              <a
+                href="#"
+                class="btn-addwish-b2 dis-block pos-relative js-addwish-b2"
+              >
+                <a href="#" rel="button" class="delete" data-id="{{item.id}}">
+                  <img
+                    class="icon-heart1 dis-block trans-04"
+                    src="/static/images/icons/trash.svg"
+                    alt="ICON"
+                  />
+				</a>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+      <!-- add new item if you are an admin -->
+      {% if current_user.is_authenticated : %}
 
-								<div class="block2-txt-child2 flex-r p-t-3">
-									<a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
-										<img class="icon-heart1 dis-block trans-04" src="/static/images/icons/icon-heart-01.png" alt="ICON">
-										<img class="icon-heart2 dis-block trans-04 ab-t-l" src="/static/images/icons/icon-heart-02.png" alt="ICON">
-									</a>
-								</div>
-							</div>
-						</div>
-					</div>
-				{% endfor %}
+      <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
+        <!-- Block2 -->
+        <button id="add-new-item">
+          <div
+            style="
+              width: 150px;
+              height: 150px;
+              background-color: #ffffff;
+              border-radius: 12px;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              box-shadow: 0 6px 15px rgba(160, 157, 157, 0.781);
+              font-size: 72px;
+              color: #717fe0;
+              cursor: pointer;
+              transition: all 0.3s ease;
+            "
+            onmouseover="
+              this.style.backgroundColor = '#717fe0';
+              this.style.color = '#ffffff';
+              this.style.boxShadow = '0 6px 20px rgba(0,0,0,0.3)';
+              this.style.transform = 'translateY(-5px)';
+            "
+            onmouseout="
+              this.style.backgroundColor = '#ffffff';
+              this.style.color = '#717fe0';
+              this.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+              this.style.transform = 'translateY(0)';
+            "
+          >
+            +
+          </div>
+        </button>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  <!-- back to up button -->
+  <div class="btn-back-to-top" id="myBtn">
+    <span class="symbol-btn-back-to-top">
+      <i class="zmdi zmdi-chevron-up"></i>
+    </span>
+  </div>
 
-				{% if current_user.is_authenticated : %}
+  <!-- show model -->
+  <div class="wrap-modal1 js-modal1 p-t-60 p-b-20">
+    <div class="overlay-modal1 js-hide-modal1"></div>
+    <div class="container rounded-2">
+      <div class="bg0 p-t-60 p-b-30 p-lr-15-lg how-pos3-parent rounded-3">
+        <button class="how-pos3 hov3 trans-04 js-hide-modal1">
+          <img src="/static/images/icons/icon-close.png" alt="CLOSE" />
+        </button>
 
-					<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
-						<!-- Block2 -->
-						<a href="{{url_for('login')}}"><div 
-							style="
-								width: 150px; 
-								height: 150px; 
-								background-color: #ffffff; 
-								border-radius: 12px; 
-								display: flex; 
-								justify-content: center; 
-								align-items: center; 
-								box-shadow: 0 6px 15px rgba(0, 0, 0, 0.781); 
-								font-size: 72px; 
-								color: #717fe0; 
-								cursor: pointer; 
-								transition: all 0.3s ease;
-							"
-							onmouseover="this.style.backgroundColor='#717fe0'; this.style.color='#ffffff'; this.style.boxShadow='0 6px 20px rgba(0,0,0,0.3)'; this.style.transform='translateY(-5px)';"
-							onmouseout="this.style.backgroundColor='#ffffff'; this.style.color='#717fe0'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.15)'; this.style.transform='translateY(0)';"
-							>
-							+
-						</div></a>
-					</div>
-				{% endif %}
-			</div>
-	</div>
-    <!-- back to up button -->
-	<div class="btn-back-to-top" id="myBtn">
-		<span class="symbol-btn-back-to-top">
-			<i class="zmdi zmdi-chevron-up"></i>
-		</span>
-	</div>
+        <div class="row">
+          <div class="col-md-6 col-lg-7 p-b-30">
+            <div class="p-l-25 p-r-30 p-lr-0-lg">
+              <div class="wrap-slick3 flex-sb flex-w">
+                <div class="wrap-slick3-dots"></div>
+                <div class="wrap-slick3-arrows flex-sb-m flex-w"></div>
 
-	<!-- show model -->
-	<div class="wrap-modal1 js-modal1 p-t-60 p-b-20 " >
-		<div class="overlay-modal1 js-hide-modal1"></div>
+                <div class="slick3 gallery-lb" id="all_item_imgs"></div>
+              </div>
+            </div>
+          </div>
 
-		<div class="container rounded-2">
-			<div class="bg0 p-t-60 p-b-30 p-lr-15-lg how-pos3-parent rounded-3">
-				<button class="how-pos3 hov3 trans-04 js-hide-modal1">
-					<img src="/static/images/icons/icon-close.png" alt="CLOSE" >
-				</button>
+          <div class="col-md-6 col-lg-5 p-b-30">
+            <div class="p-r-50 p-t-5 p-lr-0-lg">
+              <h4 class="mtext-105 cl2 js-name-detail p-b-14" id="name"></h4>
 
-				<div class="row">
-					<div class="col-md-6 col-lg-7 p-b-30">
-						<div class="p-l-25 p-r-30 p-lr-0-lg">
-							<div class="wrap-slick3 flex-sb flex-w">
-								<div class="wrap-slick3-dots"></div>
-								<div class="wrap-slick3-arrows flex-sb-m flex-w"></div>
+              <span class="stext-200 cl2" id="price" style="font-size: 1.2rem">
+              </span>
 
-								<div class="slick3 gallery-lb" id = 'all_item_imgs'>
-									
-								</div>
-							</div>
-						</div>
-					</div>
-					
-					<div class="col-md-6 col-lg-5 p-b-30">
-						<div class="p-r-50 p-t-5 p-lr-0-lg">
-							<h4 class="mtext-105 cl2 js-name-detail p-b-14" id="name">
-								
-							</h4>
+              <p class="stext-102 cl3 p-t-23" id="description"></p>
 
-							<span class="stext-200 cl2" id="price" style="font-size: 1.2rem;">
-								
-							</span>
+              <!--  -->
+              <div class="p-t-33">
+                <div class="flex-w flex-r-m p-b-10">
+                  <div class="size-203 flex-c-m respon6">Size</div>
 
-							<p class="stext-102 cl3 p-t-23" id="description">
-								
-							</p>
-							
-							<!--  -->
-							<div class="p-t-33">
-								<div class="flex-w flex-r-m p-b-10">
-									<div class="size-203 flex-c-m respon6">
-										Size
-									</div>
+                  <div class="size-204 respon6-next">
+                    <div class="rs1-select2 bor8 bg0">
+                      <select class="js-select2" name="time" id="size">
+                        <option>Choose an option</option>
+                        <option>Size S</option>
+                        <option>Size M</option>
+                        <option>Size L</option>
+                        <option>Size XL</option>
+                      </select>
+                      <div class="dropDownSelect2"></div>
+                    </div>
+                  </div>
+                </div>
 
-									<div class="size-204 respon6-next">
-										<div class="rs1-select2 bor8 bg0">
-											<select class="js-select2" name="time" id="size">
-												<option>Choose an option</option>
-												<option>Size S</option>
-												<option>Size M</option>
-												<option>Size L</option>
-												<option>Size XL</option>
-											</select>
-											<div class="dropDownSelect2"></div>
-										</div>
-									</div>
-								</div>
+                <div class="flex-w flex-r-m p-b-10">
+                  <div class="size-203 flex-c-m respon6">Color</div>
 
-								<div class="flex-w flex-r-m p-b-10">
-									<div class="size-203 flex-c-m respon6">
-										Color
-									</div>
+                  <div class="size-204 respon6-next">
+                    <div class="rs1-select2 bor8 bg0">
+                      <select
+                        class="js-select2"
+                        name="time"
+                        id="color"
+                      ></select>
+                      <div class="dropDownSelect2"></div>
+                    </div>
+                  </div>
+                </div>
 
-									<div class="size-204 respon6-next">
-										<div class="rs1-select2 bor8 bg0">
-											<select class="js-select2" name="time" id = 'color'>
-											</select>
-											<div class="dropDownSelect2"></div>
-										</div>
-									</div>
-								</div>
-								
-								<div class="flex-w flex-r-m p-b-10">
-									<div class="size-204 flex-w flex-m respon6-next">
-										<div class="wrap-num-product flex-w m-r-20 m-tb-10">
-											<div class="input-group quantity-box" style="width:140px;">
-												
-												<button class="btn btn-outline-dark minus-btn" type="button">−</button>
+                <div class="flex-w flex-r-m p-b-10">
+                  <div class="size-204 flex-w flex-m respon6-next">
+                    <div class="wrap-num-product flex-w m-r-20 m-tb-10">
+                      <div
+                        class="input-group quantity-box"
+                        style="width: 140px"
+                      >
+                        <button
+                          class="btn btn-outline-dark minus-btn"
+                          type="button"
+                        >
+                          −
+                        </button>
 
-												<input 
-													type="text" 
-													class="form-control text-center quantity-input" 
-													value="1"
-													id="amount"
-												>
+                        <input
+                          type="text"
+                          class="form-control text-center quantity-input"
+                          value="1"
+                          id="amount"
+                        />
 
-												<button class="btn btn-outline-dark plus-btn" type="button">+</button>
+                        <button
+                          class="btn btn-outline-dark plus-btn"
+                          type="button"
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
 
-											</div>
-										</div>
+                    <button
+                      class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail"
+                      id="add-cart"
+                    >
+                      Add to cart
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-										<button class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail" id="add-cart">
-											Add to cart
-										</button>
-									</div>
-								</div>	
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!-- seding the collected data to the servers -->
-	<script>
-		document.getElementById('add-cart').addEventListener('click', function() {
-			let popup = document.getElementById('popup');
-			let itemId = popup.dataset.id; // get item id from popup
-			let amount = document.getElementById('amount');
-			let color = document.getElementById('color').value;
-			let size = document.getElementById('size').value;
+  <!-- add new item -->
+  <div class="wrap-modal1 js-admin-modal p-t-60 p-b-20">
+    <div class="overlay-modal1 js-hide-admin-modal"></div>
 
-			let dataToSend = {
-				id: itemId,
-				amount: amount.value,
-				color: color,
-				size: size
-			};
+    <div class="container rounded-2">
+      <div class="bg0 p-t-60 p-b-30 p-lr-15-lg how-pos3-parent rounded-3">
+        <button class="how-pos3 hov3 trans-04 js-hide-admin-modal">
+          <img src="/static/images/icons/icon-close.png" />
+        </button>
 
-			// send to Flask
-			fetch('/add-to-cart', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(dataToSend)
-			})
-			.then(res => res.json())
-			.then(data => console.log(data))
-			.catch(err => console.error(err));
-			document.getElementById("amount").value = 1;
+        <div class="row">
+          <!-- IMAGES -->
+          <div class="col-md-6 col-lg-7 p-b-30">
+            <div class="p-l-25 p-r-30 p-lr-0-lg">
+              <!-- MAIN IMAGE -->
+              <div class="admin-main-img mb-3 text-center">
+                <img
+                  id="mainPreview"
+                  src="/static/images/placeholder.png"
+                  class="img-fluid rounded border"
+                  style="max-height: 350px"
+                />
+              </div>
 
-		});
+              <!-- THUMBNAILS -->
+              <div class="d-flex flex-wrap gap-2" id="thumbContainer"></div>
 
-	</script>
-	<script>
+              <!-- ADD IMAGE -->
+              <div class="mt-3">
+                <input
+                  type="file"
+                  id="imageInput"
+                  multiple
+                  accept="image/*"
+                  class="form-control"
+                />
+              </div>
+            </div>
+          </div>
 
-		document.querySelector('.minus-btn').onclick = function(){
+          <!-- PRODUCT DATA -->
+          <div class="col-md-6 col-lg-5 p-b-30">
+            <div class="p-r-50 p-t-5 p-lr-0-lg">
+              <!-- NAME -->
+              <input
+                type="text"
+                class="form-control mb-3"
+                placeholder="Product Name"
+                id="itemName"
+              />
 
-			let input = document.querySelector('.quantity-input');
-			let value = parseInt(input.value);
+              <!-- PRICE -->
+              <input
+                type="number"
+                class="form-control mb-3"
+                placeholder="Price"
+                id="itemPrice"
+              />
 
-			if(value > 1){
-				input.value = value - 1;
-			}
+              <!-- DESCRIPTION -->
+              <textarea
+                class="form-control mb-3"
+                rows="4"
+                placeholder="Product Description"
+                id="itemDesc"
+              ></textarea>
 
-		};
+              <!-- COLORS -->
+              <div class="mb-3">
+                <label class="form-label">Colors</label>
 
-		document.querySelector('.plus-btn').onclick = function(){
+                <div id="colorContainer"></div>
 
-			let input = document.querySelector('.quantity-input');
-			let value = parseInt(input.value);
+                <div class="input-group mt-2">
+                  <input
+                    type="text"
+                    id="newColor"
+                    class="form-control"
+                    placeholder="Add color"
+                  />
+                  <button class="btn btn-dark" id="addColor">Add</button>
+                </div>
+              </div>
 
-			input.value = value + 1;
+              <!-- SAVE -->
+              <button class="btn btn-success w-100 mt-3" id="saveItem">
+                Save Product
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- delete item -->
+  <script>
+    document.querySelectorAll(".delete").forEach((btn) => {
+      btn.addEventListener("click", function (e) {
+        e.preventDefault(); // VERY IMPORTANT
 
-		};
+        let item_id = this.dataset.id;
 
-	</script>
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        fetch("/delete-item", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: item_id }),
+        })
+          .then((res) => res.json())
+          .then((data) => console.log(data))
+          .catch((err) => console.error(err));
+      });
+    });
+  </script>
+  <!-- admin add model -->
+  <script>
+    // imgs control of the admin add model
+    let images = [];
+
+    const imageInput = document.getElementById("imageInput");
+    const thumbContainer = document.getElementById("thumbContainer");
+    const mainPreview = document.getElementById("mainPreview");
+
+    imageInput.addEventListener("change", function () {
+      [...this.files].forEach((file) => {
+        let reader = new FileReader();
+
+        reader.onload = function (e) {
+          images.push(e.target.result);
+
+          renderImages();
+        };
+
+        reader.readAsDataURL(file);
+      });
+    });
+
+    function renderImages() {
+      thumbContainer.innerHTML = "";
+
+      images.forEach((img, index) => {
+        let div = document.createElement("div");
+
+        div.className = "position-relative";
+
+        div.innerHTML = `
+	<img src="${img}" 
+	style="width:80px;height:80px;object-fit:cover"
+	class="rounded border">
+
+	<button class="btn btn-danger btn-sm position-absolute top-0 end-0"
+	onclick="deleteImage(${index})">x</button>
+	`;
+
+        thumbContainer.appendChild(div);
+      });
+
+      if (images.length > 0) {
+        mainPreview.src = images[0];
+      }
+    }
+
+    function deleteImage(i) {
+      images.splice(i, 1);
+
+      renderImages();
+    }
+
+    // add color and delete
+    const colorContainer = document.getElementById("colorContainer");
+
+    document.getElementById("addColor").onclick = function () {
+      let val = document.getElementById("newColor").value;
+
+      if (!val) return;
+
+      let div = document.createElement("span");
+
+      div.className = "badge bg-primary m-1 p-2";
+
+      div.innerHTML = `
+	${val}
+	<span onclick="this.parentElement.remove()" style="cursor:pointer"> ✕</span>
+	`;
+
+      colorContainer.appendChild(div);
+
+      document.getElementById("newColor").value = "";
+    };
+  </script>
+  <!-- collect data form admin add model and send it to flask -->
+  <script>
+    document.getElementById("saveItem").onclick = function () {
+      let name = document.getElementById("itemName").value;
+      let price = document.getElementById("itemPrice").value;
+      let desc = document.getElementById("itemDesc").value;
+
+      let colors = [...colorContainer.children].map((el) =>
+        el.textContent.replace("✕", "").trim(),
+      );
+
+      let data = {
+        name: name,
+        price: price,
+        description: desc,
+        images: images,
+        colors: colors,
+      };
+
+      fetch("/admin/add-item", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+
+        body: JSON.stringify(data),
+      });
+    };
+  </script>
+  <!-- open the admin add model -->
+  <script>
+    // show admin add item page
+    const addBtn = document.getElementById("add-new-item");
+    const adminModal = document.querySelector(".js-admin-modal");
+
+    addBtn.addEventListener("click", function () {
+      adminModal.classList.add("show-admin-modal");
+    });
+
+    // hide admin add item page
+    const closeBtns = document.querySelectorAll(".js-hide-admin-modal");
+
+    closeBtns.forEach((btn) => {
+      btn.addEventListener("click", function () {
+        adminModal.classList.remove("show-admin-modal");
+      });
+    });
+  </script>
+  <!-- seding the collected data to the servers -->
+  <script>
+    document.getElementById("add-cart").addEventListener("click", function () {
+      let popup = document.getElementById("popup");
+      let itemId = popup.dataset.id; // get item id from popup
+      let amount = document.getElementById("amount");
+      let color = document.getElementById("color").value;
+      let size = document.getElementById("size").value;
+
+      let dataToSend = {
+        id: itemId,
+        amount: amount.value,
+        color: color,
+        size: size,
+      };
+
+      // send to Flask
+      fetch("/add-to-cart", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(dataToSend),
+      })
+        .then((res) => res.json())
+        .then((data) => console.log(data))
+        .catch((err) => console.error(err));
+      document.getElementById("amount").value = 1;
+    });
+  </script>
+  <script>
+    document.querySelector(".minus-btn").onclick = function () {
+      let input = document.querySelector(".quantity-input");
+      let value = parseInt(input.value);
+
+      if (value > 1) {
+        input.value = value - 1;
+      }
+    };
+
+    document.querySelector(".plus-btn").onclick = function () {
+      let input = document.querySelector(".quantity-input");
+      let value = parseInt(input.value);
+
+      input.value = value + 1;
+    };
+  </script>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</div>

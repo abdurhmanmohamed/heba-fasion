@@ -45,7 +45,7 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='vendor/css-hamburgers/hamburgers.min.css') }}"
     />
-
+	<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600&display=swap" rel="stylesheet">
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='vendor/animsition/css/animsition.min.css') }}"
@@ -92,6 +92,11 @@
         background: #f4f6fb;
         padding: 0;
       }
+	  body *:lang(ar),
+	  body *:lang(arb),
+	  body *[dir="rtl"] {
+			font-family: 'Cairo', Arial, sans-serif !important;
+			direction: rtl;}
 
       .dashboard {
         margin-top: 120px;
@@ -313,7 +318,7 @@
 		margin-bottom:20px;
 		}
 
-		.modal-header h2{
+	  .modal-header h2{
 		margin:0;
 		}
 
@@ -346,10 +351,10 @@
 		}
 
 	  .message-box{
-		background:#f8f9ff;
-		padding:15px;
-		border-radius:10px;
-		margin-bottom:20px;
+			background:#f8f9ff;
+			padding:15px;
+			border-radius:10px;
+			margin-bottom:20px;
 		}
 
 	  .items-box{
@@ -361,6 +366,71 @@
 		}
 
 	
+	  .order-item{
+  		display:flex;
+		align-items:center;
+		gap:15px;
+
+		background:#f8f9ff;
+		padding:12px;
+		border-radius:12px;
+
+		margin-bottom:12px;
+
+		transition:0.2s;
+		}
+
+	  .order-item:hover{
+		transform:scale(1.01);
+		background:#f2f4ff;
+		}
+
+	  .item-image{
+		width:60px;
+		height:60px;
+		border-radius:10px;
+		overflow:hidden;
+		flex-shrink:0;
+		}
+
+	  .item-image img{
+		width:100%;
+		height:100%;
+		object-fit:cover;
+		}
+
+	  .item-info{
+		flex:1;
+		}
+
+      .item-name{
+		margin:0;
+		font-size:15px;
+		font-weight:600;
+		}
+
+	  .item-meta{
+		margin-top:4px;
+		font-size:13px;
+		color:#666;
+		display:flex;
+		gap:10px;
+		}
+
+	  .item-meta span{
+		background:#eef1ff;
+		padding:3px 8px;
+		border-radius:6px;
+		}
+
+	  .item-amount{
+		font-weight:600;
+		font-size:15px;
+		color:#4f46e5;
+		}
+	  .order-item{
+		border:1px solid #eef0ff;
+		}
     </style>
   </head>
 
@@ -429,8 +499,8 @@
 			</div>
 
 			<div class="info-box">
-				<label>Another Field</label>
-				<p id="customerExtra">Extra info</p>
+				<label>Second Number</label>
+				<p id="customerSecondPhone">Extra info</p>
 			</div>
 
 			</div>
@@ -441,10 +511,10 @@
 			</div>
 
 			<div class="items-box">
-			<h3>Ordered Items</h3>
-			<div id="orderedItems">
-				<!-- you will design this later -->
-			</div>
+				<h3>Ordered Items</h3>
+				<div id="orderedItems">
+
+				</div>
 			</div>
 
 		</div>
@@ -500,8 +570,10 @@
         const card = document.createElement("div");
         card.className = "order-card";
         card.dataset.id = order.id;
-		card.onclick = function() {
-			myFunction(this.dataset.id);
+		card.onclick = function(e) {
+			if (!e.target.closest('button')) {   // check if the clicked element is NOT inside a button
+				myFunction(this.dataset.id);
+			}
 		};
         card.innerHTML = `
           <div class="order-info">
@@ -569,7 +641,7 @@
 
 	function myFunction(id) {
 		$.ajax({
-        url: "/test",
+        url: "/get-order-data",
         method: "POST",
 		
 		data:{id: id},
@@ -580,8 +652,29 @@
 			document.getElementById("customerPhone").textContent = data.first_number;
 			document.getElementById("customerCity").textContent = data.city;
 			document.getElementById("customerAddress").textContent = data.adress;
-			document.getElementById("customerMessage").textContent = data.message;
 			document.getElementById("orderDate").textContent = data.created_at;
+			document.getElementById("customerSecondPhone").textContent = data.second_number;
+			document.getElementById("orderedItems").innerHTML = '';
+            data.ordered_items.forEach(function(item){
+            let cartElement = `
+                	<div class="order-item">
+						<div class="item-image">
+							<img src="${item.img}">
+						</div>
+
+						<div class="item-info">
+							<h4 class="item-name">${item.name}</h4>
+							<div class="item-meta">
+								<span>${item.color}</span>
+								<span>${item.size}</span>
+							</div>
+						</div>
+
+						<div class="item-amount">x${item.amount}</div>
+					</div>
+                `;
+                    document.getElementById("orderedItems").insertAdjacentHTML('beforeend', cartElement);
+			});
 
 			modal.classList.add("active");
 			closeModal.onclick = () => modal.classList.remove("active");
