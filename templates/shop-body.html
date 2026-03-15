@@ -181,6 +181,198 @@
   #imageInput::file-selector-button:hover {
     background: #5d6bda;
   }
+
+  .delete-btn:hover {
+    color: red;
+  }
+  /* delete edit butons */
+  .item-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  /* Base button */
+
+  .action-btn {
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background: #f5f5f5;
+    transition: all 0.25s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  }
+
+  /* icons */
+
+  .action-btn img {
+    width: 18px;
+    height: 18px;
+    opacity: 0.8;
+    transition: 0.2s;
+  }
+
+  /* hover */
+
+  .action-btn:hover img {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+
+  /* EDIT STYLE */
+
+  .edit-btn:hover {
+    background: #e8f2ff;
+    box-shadow: 0 4px 12px rgba(0, 120, 255, 0.25);
+  }
+
+  /* DELETE STYLE */
+
+  .delete-btn:hover {
+    background: #ffe9e9;
+    box-shadow: 0 4px 12px rgba(255, 0, 0, 0.25);
+  }
+  /* the popup styling for delete item */
+  /* Overlay */
+
+  .confirm-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 9999;
+  }
+
+  /* Active */
+
+  .confirm-overlay.active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* Modal */
+
+  .confirm-modal {
+    background: #fff;
+    padding: 40px;
+    border-radius: 16px;
+    width: 400px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+    transform: scale(0.9);
+    transition: all 0.3s ease;
+  }
+
+  .confirm-overlay.active .confirm-modal {
+    transform: scale(1);
+  }
+
+  /* Warning Icon */
+
+  .confirm-icon {
+    width: 70px;
+    height: 70px;
+    margin: auto;
+    margin-bottom: 20px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ffb300, #ff6f00);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    color: white;
+    box-shadow: 0 8px 20px rgba(255, 140, 0, 0.4);
+    animation: pulse 2s infinite;
+  }
+
+  /* Title */
+
+  .confirm-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #333;
+  }
+
+  /* Text */
+
+  .confirm-text {
+    font-size: 15px;
+    color: #666;
+    margin-bottom: 30px;
+  }
+
+  /* Buttons Container */
+
+  .confirm-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+  }
+
+  /* Cancel Button */
+
+  .btn-cancel {
+    padding: 10px 22px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    background: #f8f8f8;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  .btn-cancel:hover {
+    background: #eee;
+  }
+
+  /* Danger Button */
+
+  .btn-danger-confirm {
+    padding: 10px 22px;
+    border-radius: 8px;
+    border: none;
+    background: linear-gradient(135deg, #ff3b3b, #d60000);
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 6px 15px rgba(255, 0, 0, 0.3);
+    transition: 0.3s;
+  }
+
+  .btn-danger-confirm:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(255, 0, 0, 0.4);
+  }
+
+  /* Warning pulse animation */
+
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+
+    50% {
+      transform: scale(1.1);
+    }
+
+    100% {
+      transform: scale(1);
+    }
+  }
 </style>
 <div class="bg0 m-t-23 p-b-140 pt-5">
   <div class="container">
@@ -237,19 +429,21 @@
       </div>
 
       <!-- Search product -->
-      <div class="dis-none panel-search w-full p-t-10 p-b-15">
-        <div class="bor8 dis-flex p-l-15">
-          <button class="size-113 flex-c-m fs-16 cl2 hov-cl1 trans-04">
-            <i class="zmdi zmdi-search"></i>
-          </button>
-          <input
-            class="mtext-107 cl2 size-114 plh2 p-r-15"
-            type="text"
-            name="search-product"
-            placeholder="Search"
-          />
+      <form action="{{url_for('home')}}" method="get">
+        <div class="dis-none panel-search w-full p-t-10 p-b-15">
+          <div class="bor8 dis-flex p-l-15">
+            <a class="size-113 flex-c-m fs-16 cl2 hov-cl1 trans-04">
+              <i class="zmdi zmdi-search"></i>
+            </a>
+            <input
+              class="mtext-107 cl2 size-114 plh2 p-r-15"
+              type="text"
+              name="search"
+              placeholder="Search"
+            />
+          </div>
         </div>
-      </div>
+      </form>
     </div>
     <div class="row isotope-grid">
       {% for item in items: %}
@@ -293,20 +487,20 @@
               </span>
             </div>
 
-            <div class="block2-txt-child2 flex-r p-t-3">
-              <a
-                href="#"
-                class="btn-addwish-b2 dis-block pos-relative js-addwish-b2"
-              >
-                <a href="#" rel="button" class="delete" data-id="{{item.id}}">
-                  <img
-                    class="icon-heart1 dis-block trans-04"
-                    src="/static/images/icons/trash.svg"
-                    alt="ICON"
-                  />
-				</a>
-              </a>
-            </div>
+            {%if current_user.is_authenticated%}
+              <div class="block2-txt-child2 flex-r p-t-3">
+                <div class="item-actions">
+                  <!-- DELETE -->
+                  <button
+                    class="action-btn delete-btn"
+                    data-id="{{item.id}}"
+                    onclick="openConfirmPopup(this)"
+                  >
+                    <img src="/static/images/icons/trash.svg" alt="Delete" />
+                  </button>
+                </div>
+              </div>
+            {%endif%}
           </div>
         </div>
       </div>
@@ -563,24 +757,66 @@
       </div>
     </div>
   </div>
+  <!-- pop up message for the delete -->
+  <div id="confirmOverlay" class="confirm-overlay">
+    <div class="confirm-modal">
+      <div class="confirm-icon">⚠</div>
+
+      <h3 class="confirm-title">Are you sure?</h3>
+
+      <p class="confirm-text">
+        This action cannot be undone. The product will be permanently removed.
+      </p>
+
+      <div class="confirm-buttons">
+        <button class="btn-cancel" onclick="closeConfirmPopup()">Cancel</button>
+
+        <button
+          class="btn-danger-confirm delete-item"
+          id="popupDeleteBtn"
+          onclick="confirmAction()"
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
   <!-- delete item -->
   <script>
-    document.querySelectorAll(".delete").forEach((btn) => {
-      btn.addEventListener("click", function (e) {
-        e.preventDefault(); // VERY IMPORTANT
+    const deleteButtons = document.querySelectorAll(".delete-btn");
+    const popupDeleteBtn = document.getElementById("popupDeleteBtn");
 
-        let item_id = this.dataset.id;
+    let currentItemId = null;
 
-        fetch("/delete-item", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ id: item_id }),
-        })
-          .then((res) => res.json())
-          .then((data) => console.log(data))
-          .catch((err) => console.error(err));
+    // when clicking the first delete button
+    deleteButtons.forEach((btn) => {
+      btn.addEventListener("click", function () {
+        currentItemId = this.dataset.id;
+
+        openConfirmPopup();
       });
     });
+
+    // popup delete button
+    popupDeleteBtn.addEventListener("click", function () {
+      fetch(`/delete-item/${currentItemId}`, {
+        method: "POST",
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          closeConfirmPopup();
+
+          location.reload();
+        });
+    });
+
+    function openConfirmPopup() {
+      document.getElementById("confirmOverlay").classList.add("active");
+    }
+
+    function closeConfirmPopup() {
+      document.getElementById("confirmOverlay").classList.remove("active");
+    }
   </script>
   <!-- admin add model -->
   <script>

@@ -225,7 +225,12 @@ def userloader(user_id):
 
 @app.route('/')
 def home():
-    items_list = db.session.query(ItemDetails).filter_by(visability=1).all()
+    keyword = request.args.get('search')
+    if keyword:
+        items_list = ItemDetails.query.filter(ItemDetails.visability==1,ItemDetails.name.ilike(f"%{keyword}%")).all()
+    else:
+        items_list = db.session.query(ItemDetails).filter_by(visability=1).all()
+    
     # delete_all_cart_items=[db.session.delete(item) for item in db.session.query(Cart).all()]
     # db.session.commit()
     return render_template('index.html', items = items_list)
@@ -268,6 +273,7 @@ def login():
     
 
 @app.route('/register',methods=['POST', 'GET'])
+@login_required
 def register():
     if request.method=='POST':
         ent_name = request.form['name']
@@ -452,7 +458,6 @@ def get_orders():
 
     return jsonify({'orders': orders})
 
-
 @app.route('/update-order-state', methods=['POST'])
 def update_order_state():
 
@@ -547,15 +552,15 @@ def add_item():
     print(name, price, description,colors,image_links)
     return jsonify({"status":"ok"})
 
-@app.route('/delete-item',methods=['POST'])
-def delete():
-    data = request.get_json()
-    id = data["id"]
+@app.route('/delete-item/<int:id>',methods=['POST'])
+def delete(id):
+    print(id)
     targeted_item=db.get_or_404(ItemDetails,id)
     targeted_item.visability =0
     print(id)
     db.session.commit()
-
-    return redirect(url_for('home'))
+    return jsonify({'statue':'succedssful'}
+        
+    )
 if __name__ == '__main__':
     app.run(debug=True)
