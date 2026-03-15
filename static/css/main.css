@@ -1,4 +1,4 @@
-/*------------------------------------------------------------------
+﻿/*------------------------------------------------------------------
 Project:  
 Version:  
 Last change:  
@@ -156,10 +156,10 @@ Input, textarea : 14px/1.6 '', Arial, sans-serif;
 [ BUTTON BACK TO TOP ]*/
 body *:lang(ar),
 body *:lang(arb),
-body *[dir="rtl"] {
-    font-family: 'Cairo', Arial, sans-serif !important;
+/* body *[dir="rtl"] {
+    font-family:'Cairo', 'Tajawal', 'Noto Kufi Arabic', 'Noto Sans Arabic', Arial, sans-serif !important;
     direction: rtl;
-}
+} */
 .btn-back-to-top {
   display: none;
   position: fixed;
@@ -3379,4 +3379,42 @@ input.num-product::-webkit-inner-spin-button {
     padding: 20px;
   }
 
+}
+
+/*---------------------------------------------*/
+/* Arabic fallback for Poppins families (uses local system Arabic fonts). */
+@font-face {
+  font-family: Poppins-Regular;
+  src: local('Traditional Arabic'), local('Arabic Typesetting'), local('Candarab');
+  unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
+}
+@font-face {
+  font-family: Poppins-Light;
+  src: local('Traditional Arabic'), local('Arabic Typesetting'), local('Candarab');
+  unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
+}
+@font-face {
+  font-family: Poppins-ExtraLight;
+  src: local('Traditional Arabic'), local('Arabic Typesetting'), local('Candarab');
+  unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
+}
+@font-face {
+  font-family: Poppins-Medium;
+  src: local('Traditional Arabic'), local('Arabic Typesetting'), local('Candarab');
+  unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
+}
+@font-face {
+  font-family: Poppins-Italic;
+  src: local('Traditional Arabic'), local('Arabic Typesetting'), local('Candarab');
+  unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
+}
+@font-face {
+  font-family: Poppins-Bold;
+  src: local('Traditional Arabic'), local('Arabic Typesetting'), local('Candarab');
+  unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
+}
+@font-face {
+  font-family: Poppins-SemiBold;
+  src: local('Traditional Arabic'), local('Arabic Typesetting'), local('Candarab');
+  unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
 }

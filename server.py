@@ -229,7 +229,7 @@ def home():
     if keyword:
         items_list = ItemDetails.query.filter(ItemDetails.visability==1,ItemDetails.name.ilike(f"%{keyword}%")).all()
     else:
-        items_list = db.session.query(ItemDetails).filter_by(visability=1).all()
+        items_list = db.session.query(ItemDetails).filter(ItemDetails.visability==1).all()
     
     # delete_all_cart_items=[db.session.delete(item) for item in db.session.query(Cart).all()]
     # db.session.commit()
@@ -238,7 +238,7 @@ def home():
 
 @app.route('/shoping')
 def shop():
-    items = db.session.query(ItemDetails).filter_by(visability=1).all()
+    items = db.session.query(ItemDetails).filter(ItemDetails.visability==1).all()
     return render_template('shop.html', items = items)
 
 @app.route('/shoping-cart')
