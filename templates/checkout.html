@@ -296,22 +296,15 @@
 						<label>Adress</label>
 					</div>
 
-					<!-- <div class="input-group">
-						<select name="field" >
-							<option value=""></option>
-							<option>Customer</option>
-							<option>Supplier</option>
-							<option>Business Partner</option>
-							<option>Other</option>
-						</select>
-						<label>Field</label>
-					</div> -->
-
 					<div class="input-group">
 						<textarea name="msg" rows="4" placeholder=" "></textarea>
 						<label>Message</label>
 					</div>
-
+					{% if items_num and items_num >= 2 and total_price %}
+						<p style="color: red; font-size: 2rem; text-align: right;">
+						يوجد خصم 50 جنيه اجمالي المبلغ: {{ total_price - 50 }} جنيه
+						</p>
+					{% endif %}
 					<button type="submit" class="submit-btn	stext-101">
 						Submit
 					</button>

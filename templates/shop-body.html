@@ -390,34 +390,23 @@
         </button>
         <button
           class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5"
-          data-filter=".women"
+          data-filter=".جيبه"
         >
-          Women
+          Skirts
         </button>
         <button
           class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5"
-          data-filter=".men"
+          data-filter=".شميز"
         >
-          Men
+          Shmiz
         </button>
         <button
           class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5"
-          data-filter=".bag"
+          data-filter=".بنطلون"
         >
-          Bag
+          Pants
         </button>
-        <button
-          class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5"
-          data-filter=".shoes"
-        >
-          Shoes
-        </button>
-        <button
-          class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5"
-          data-filter=".watches"
-        >
-          Watches
-        </button>
+
       </div>
 
       <div class="flex-w flex-c-m m-tb-10">
@@ -452,11 +441,11 @@
     <div class="row isotope-grid">
       {% for item in items: %}
       <div
-        class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women rounded-2"
+        class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item {{item.name}} rounded-2"
         id="popup"
       >
         <!-- Block2 -->
-        <div class="block2 rounded-2">
+        <div class="block2 rounded-2" data-category="{{item.name}}">
           <div class="block2-pic hov-img0 rounded-2">
             <img
               src="{{ item.item_imgs[0].img if item.item_imgs|length > 0 else url_for('static', filename='images/blog-06.jpg') }}"
@@ -610,7 +599,7 @@
                   <div class="size-203 flex-c-m respon6">Color</div>
 
                   <div class="size-204 respon6-next">
-                    <div class="rs1-select2 bor8 bg0" style="font-family:  'Cairo', 'sans-serif';">
+                    <div class="rs1-select2 bor8 bg0" style="font-family:  'Cairo', 'sans-serif'; visibility: hidden;">
                       <select
                         style="font-family:  'Cairo', 'sans-serif';"
                         class="js-select2"

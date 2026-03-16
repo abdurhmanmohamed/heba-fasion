@@ -18,7 +18,8 @@ from flask_login import LoginManager,UserMixin,login_user, login_required,curren
 app= Flask(__name__)
 login_manager = LoginManager(app)
 app.secret_key='abdomohamed'
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres.xnaxxvhxyzruoevrgjga:abdo-mohamed20@aws-1-eu-west-1.pooler.supabase.com:6543/postgres"
+# app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres.xnaxxvhxyzruoevrgjga:abdo-mohamed20@aws-1-eu-west-1.pooler.supabase.com:6543/postgres"
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
 SUPABASE_URL = "https://wmkfvadfdnjpmdurnudb.supabase.co"
 SUPABASE_KEY = "sb_publishable_aCVfYc4k1oCSUl3twmfjVA_iSlR3gy6"
 BUCKET = "items"
@@ -30,6 +31,7 @@ db = SQLAlchemy(model_class=Base)
 db.init_app(app)
 
 class Admin(db.Model, UserMixin):
+    __tablename__ = "admin"
     id:Mapped[int] = mapped_column(Integer,primary_key=True)
     name:Mapped[str] = mapped_column(String(150), nullable=False)
     number:Mapped[int] = mapped_column(Integer, nullable=False)
@@ -245,7 +247,8 @@ def shop():
 def shoping_cart():
     cart_items = Cart.query.filter_by(session_id=session['session_id']).all()
     total_price = sum(item.price*item.amount for item in cart_items)
-    return render_template('shoping-cart.html', items = cart_items, total_price = total_price)
+    
+    return render_template('shoping-cart.html', items = cart_items , total_price = total_price)
 
 
 @app.route('/login',methods=['POST', 'GET'])
@@ -302,6 +305,10 @@ def register():
 
 @app.route('/checkout', methods = ['POST', 'GET'])
 def check_out():
+    
+    cart_items = Cart.query.filter_by(session_id=session['session_id'], order_id=None).all()
+    total_amount = sum(item.amount for item in cart_items)
+    total_price = sum(item.price*item.amount for item in cart_items)
     if request.method =='POST':
 
         order = Order(
@@ -316,16 +323,19 @@ def check_out():
         db.session.commit()
 
         # 2️⃣ Assign cart items of this session to the order
-        cart_items = Cart.query.filter_by(session_id=session['session_id'], order_id=None).all()
         for item in cart_items:
             item.order_id = order.id
+
         db.session.commit()
 
         # 3️⃣ Optional: clear session cart (start fresh)
         session.pop('session_id', None)
         return render_template('after-order.html')
+
+    elif not cart_items:
+        return redirect(url_for('home'))
     else:
-        return render_template('checkout.html')
+        return render_template('checkout.html', items_num = total_amount,total_price=total_price)
 
 @app.route('/dashboard')
 @login_required
