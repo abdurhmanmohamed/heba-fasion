@@ -154,8 +154,6 @@ Input, textarea : 14px/1.6 '', Arial, sans-serif;
 
 /*//////////////////////////////////////////////////////////////////
 [ BUTTON BACK TO TOP ]*/
-body *:lang(ar),
-body *:lang(arb),
 /* body *[dir="rtl"] {
     font-family:'Cairo', 'Tajawal', 'Noto Kufi Arabic', 'Noto Sans Arabic', Arial, sans-serif !important;
     direction: rtl;

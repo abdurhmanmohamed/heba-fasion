@@ -431,7 +431,7 @@ $('.btn-num-product-up').on('click', function(){
                 // update colors
                 $('#color').html('');
                 response.colors.forEach(function(color){
-                    $('#color').append(`<option>${color}</option>`);
+                    $('#color').append(`<option class='color-item'  style="font-family:  'Cairo', 'sans-serif';" >${color}</option>`);
                 });
                 document.getElementById('popup').dataset.id = item_id;
 
