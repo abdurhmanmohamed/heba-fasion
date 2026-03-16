@@ -619,6 +619,8 @@
                       ></select>
                       <div class="dropDownSelect2" style="font-family:  'Cairo', 'sans-serif';"></div>
                     </div>
+                    <!-- Rendered by static/js/main.js (shows all colors as clickable chips) -->
+                    <div id="colorOptions" class="color-chip-list" dir="auto"></div>
                   </div>
                 </div>
 
@@ -954,14 +956,18 @@
   <!-- seding the collected data to the servers -->
   <script>
     document.getElementById("add-cart").addEventListener("click", function () {
-      let popup = document.getElementById("popup");
-      let itemId = popup.dataset.id; // get item id from popup
+      let itemId = this.dataset.itemId;
+      if (!itemId) {
+        return;
+      }
+      let variantId = this.dataset.variantId || null;
       let amount = document.getElementById("amount");
       let color = document.getElementById("color").value;
       let size = document.getElementById("size").value;
 
       let dataToSend = {
         id: itemId,
+        variant_id: variantId,
         amount: amount.value,
         color: color,
         size: size,
@@ -999,5 +1005,7 @@
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </div>
+
+
 
 

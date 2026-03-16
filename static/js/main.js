@@ -1,4 +1,4 @@
-
+﻿
 (function ($) {
     "use strict";
 
@@ -199,8 +199,14 @@
         url: "/get-cart-items",
         method: "POST",
         success: function(response){
+                const variants = response.variants || [];
+                let images = response.images || [];
+                if ((!images || !images.length) && variants.length) {
+                    images = variants.map(v => v.image).filter(Boolean);
+                }
+
                 // update text
-                document.getElementById("total-price").innerText = response.total_price + " E£";
+                document.getElementById("total-price").innerText = response.total_price + " EGP";
                 $('#cart-items').html('');
                 response.items.forEach(function(item){
                 let cartElement = `
@@ -212,8 +218,8 @@
 
                     <!-- Name + Price -->
                     <div class="cart-item-info flex-grow-1 ms-2">
-                        <div class="cart-item-name">${item.name}</div>
-                        <div class="cart-item-price">${item.amount} x ${item.price} E£</div>
+                        <div class="cart-item-name" style="font-family:  'Cairo', 'sans-serif';">${item.name}</div>
+                        <div class="cart-item-price">${item.amount} x ${item.price} EGP</div>
                     </div>
 
                     <!-- Trash button -->
@@ -236,8 +242,14 @@
                         method: "POST",
                         data: {id: item_id},
                         success: function(response){
+                const variants = response.variants || [];
+                let images = response.images || [];
+                if ((!images || !images.length) && variants.length) {
+                    images = variants.map(v => v.image).filter(Boolean);
+                }
+
                             $('#total-price').html('');
-                            $('#total-price').text(response.total_price + " E£");
+                            $('#total-price').text(response.total_price + " EGP");
                             console.log("Item removed from server");
                         }
                     });
@@ -292,12 +304,18 @@ $('.btn-num-product-down').on('click', function(){
         contentType: "application/json",
         data: JSON.stringify({id: item_id, amount: numProduct}),
         success: function(response){
+                const variants = response.variants || [];
+                let images = response.images || [];
+                if ((!images || !images.length) && variants.length) {
+                    images = variants.map(v => v.image).filter(Boolean);
+                }
+
             if(response.removed){
                 $(`tr[data-id='${item_id}']`).remove();
             } else {
-                $totalCell.text(response.price * numProduct + " E£");
+                $totalCell.text(response.price * numProduct + " EGP");
             }
-            $('.total_price').text(response.total_price + " E£");  // if you have a cart total element
+            $('.total_price').text(response.total_price + " EGP");  // if you have a cart total element
         }
     });
 });
@@ -317,8 +335,14 @@ $('.btn-num-product-up').on('click', function(){
         contentType: "application/json",
         data: JSON.stringify({id: item_id, amount: numProduct}),
         success: function(response){
-            $totalCell.text(response.price * numProduct + " E£");
-            $('.total_price').text(response.total_price + " E£");  // update cart total
+                const variants = response.variants || [];
+                let images = response.images || [];
+                if ((!images || !images.length) && variants.length) {
+                    images = variants.map(v => v.image).filter(Boolean);
+                }
+
+            $totalCell.text(response.price * numProduct + " EGP");
+            $('.total_price').text(response.total_price + " EGP");  // update cart total
         }
     });
 });
@@ -367,7 +391,114 @@ $('.btn-num-product-up').on('click', function(){
     
     /*==================================================================
     [ Show modal1 ]*/
-    $(document).on('click', '.js-show-modal1', function(e){
+    
+    // Render all variant colors as visible, clickable chips inside the quick-view modal.
+    function colorLabelToCss(label) {
+        const raw = (label || '').trim();
+        const s = raw.toLowerCase();
+
+        const map = {
+            red: '#ef4444',
+            blue: '#3b82f6',
+            black: '#111827',
+            white: '#f9fafb',
+            gray: '#9ca3af',
+            grey: '#9ca3af',
+            green: '#22c55e',
+            yellow: '#eab308',
+            pink: '#ec4899',
+            brown: '#8b5e3c',
+            purple: '#a855f7',
+            orange: '#f97316',
+            gold: '#d4af37',
+            silver: '#c0c0c0'
+        };
+        if (map[s]) return map[s];
+
+        // Common Arabic color names.
+        const amap = {
+            'احمر': '#ef4444',
+            'أحمر': '#ef4444',
+            'ازرق': '#3b82f6',
+            'أزرق': '#3b82f6',
+            'اسود': '#111827',
+            'أسود': '#111827',
+            'ابيض': '#f9fafb',
+            'أبيض': '#f9fafb',
+            'رمادي': '#9ca3af',
+            'اخضر': '#22c55e',
+            'أخضر': '#22c55e',
+            'اصفر': '#eab308',
+            'أصفر': '#eab308',
+            'وردي': '#ec4899',
+            'بني': '#8b5e3c',
+            'بنفسجي': '#a855f7',
+            'برتقالي': '#f97316'
+        };
+        if (amap[raw]) return amap[raw];
+
+        return null;
+    }
+
+    function setActiveColorChip(color) {
+        const $wrap = $('#colorOptions');
+        if (!$wrap.length) return;
+
+        const target = (color || '').trim();
+        $wrap.find('.js-color-chip').each(function(){
+            const $btn = $(this);
+            const btnColor = String($btn.data('color') || '').trim();
+            const isActive = btnColor === target;
+            $btn.toggleClass('is-active', isActive);
+            $btn.attr('aria-pressed', isActive ? 'true' : 'false');
+        });
+    }
+
+    function renderColorChips(variants, colorsFallback) {
+        const $wrap = $('#colorOptions');
+        if (!$wrap.length) return;
+
+        $wrap.empty();
+
+        const chips = [];
+        if (Array.isArray(variants) && variants.length) {
+            variants.forEach(function(v){
+                chips.push({
+                    color: v.color || 'Default',
+                    variant_id: v.id || '',
+                    image: v.image || ''
+                });
+            });
+        } else if (Array.isArray(colorsFallback) && colorsFallback.length) {
+            colorsFallback.forEach(function(c){
+                chips.push({ color: c, variant_id: '', image: '' });
+            });
+        }
+
+        // Render unique items (avoid duplicates).
+        const seen = new Set();
+        chips.forEach(function(c){
+            const key = [c.color, c.variant_id, c.image].join('|');
+            if (seen.has(key)) return;
+            seen.add(key);
+
+            const $btn = $('<button type="button" class="color-chip js-color-chip" aria-pressed="false"></button>');
+            $btn.attr('data-color', c.color);
+            if (c.variant_id) $btn.attr('data-variant-id', c.variant_id);
+            if (c.image) $btn.attr('data-image', c.image);
+
+            const $dot = $('<span class="color-dot" aria-hidden="true"></span>');
+            const cssColor = colorLabelToCss(c.color);
+            if (cssColor) $dot.css('background', cssColor);
+
+            const $label = $('<span class="color-chip-label"></span>').text(c.color);
+            $btn.append($dot, $label);
+            $wrap.append($btn);
+        });
+
+        setActiveColorChip($('#color').val());
+    }
+$(document).on('click', '.js-show-modal1', function(e){
         e.preventDefault();
 
         let item_id = $(this).data('id');
@@ -378,18 +509,24 @@ $('.btn-num-product-up').on('click', function(){
             data: {id: item_id},
 
             success: function(response){
+                const variants = response.variants || [];
+                let images = response.images || [];
+                if ((!images || !images.length) && variants.length) {
+                    images = variants.map(v => v.image).filter(Boolean);
+                }
+
                 // update text
 
                 if ($('.slick3').hasClass('slick-initialized')) {
                     $('.slick3').slick('unslick');
                 }
                 $('#name').text(response.name);
-                $('#price').text(response.price + " E£");
+                $('#price').text(response.price + " EGP");
                 $('#description').text(response.description);
 
                 // update images
                 $('#all_item_imgs').html('');
-                response.images.forEach(function(img){
+                images.forEach(function(img){
                     let imageElement = `
                         <div class="item-slick3" data-thumb="${img}">
                             <div class="wrap-pic-w pos-relative">
@@ -427,22 +564,66 @@ $('.btn-num-product-up').on('click', function(){
                         }
                     });
                 });
-
-                // update colors
+                // update colors + visible chips
                 $('#color').html('');
-                response.colors.forEach(function(color){
-                    $('#color').append(`<option class='color-item'  style="font-family:  'Cairo', 'sans-serif';" >${color}</option>`);
-                });
-                document.getElementById('popup').dataset.id = item_id;
+                if (variants.length) {
+                    variants.forEach(function(variant){
+                        const colorName = variant.color || 'Default';
+                        const opt = $('<option></option>').val(colorName).text(colorName);
+                        if (variant.id) opt.attr('data-variant-id', variant.id);
+                        if (variant.image) opt.attr('data-image', variant.image);
+                        $('#color').append(opt);
+                    });
+                } else if (response.colors && response.colors.length) {
+                    response.colors.forEach(function(color){
+                        $('#color').append(`<option class='color-item' style="font-family:  'Cairo', 'sans-serif';">${color}</option>`);
+                    });
+                }
 
-
+                renderColorChips(variants, response.colors || []);
+                $('#add-cart').attr('data-item-id', item_id);
+                $('#color').trigger('change');
                 // show modal
                 $('.js-modal1').addClass('show-modal1');
             }
         });
     });
 
-    $('.js-hide-modal1').on('click', function(){
+    
+    $(document).on('change', '#color', function(){
+        const opt = $(this).find('option:selected');
+        const variantId = opt.attr('data-variant-id') || '';
+        $('#add-cart').attr('data-variant-id', variantId);
+        setActiveColorChip($(this).val());
+    });
+
+    $(document).on('click', '.js-color-chip', function(){
+        const $btn = $(this);
+        const color = String($btn.data('color') || '').trim();
+        const variantId = $btn.data('variant-id') || '';
+
+        if (color) {
+            const $select = $('#color');
+            if ($select.length) {
+                let $opt = $select.find('option').filter(function(){
+                    return $(this).val() === color;
+                }).first();
+
+                if (!$opt.length) {
+                    $select.append($('<option></option>').val(color).text(color));
+                }
+
+                $select.val(color).trigger('change');
+            }
+        }
+
+        if (variantId) {
+            $('#add-cart').attr('data-variant-id', variantId);
+        }
+
+        setActiveColorChip(color);
+    });
+$('.js-hide-modal1').on('click', function(){
         $('.js-modal1').removeClass('show-modal1');
     });
 
@@ -455,3 +636,5 @@ $('.btn-num-product-up').on('click', function(){
 
 
 })(jQuery);
+
+
