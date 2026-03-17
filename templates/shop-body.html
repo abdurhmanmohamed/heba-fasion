@@ -1,6 +1,6 @@
 ﻿<style>
-  .color-item{
-    font-family:  'Cairo', 'sans-serif';
+  .color-item {
+    font-family: "Cairo", "sans-serif";
     font-weight: 600;
   }
   .js-admin-modal {
@@ -377,6 +377,130 @@
       transform: scale(1);
     }
   }
+  /* ============================= */
+  /* خلى كل حاجة تحت بعض */
+  .wrap-slick3 {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  /* الصورة الكبيرة */
+  .slick3 {
+    width: 100% !important;
+    order: 1;
+  }
+
+  .slick3 .item-slick3 img {
+    width: 100% !important;
+    height: 420px;
+    object-fit: cover;
+    border-radius: 12px;
+  }
+
+  /* ============================= */
+  /* الدوتس (الصور الصغيرة) تحت */
+  .wrap-slick3-dots {
+    order: 2;
+    margin-top: 12px;
+    width: 100%;
+  }
+
+  /* اخفاء الأسهم */
+  .wrap-slick3-arrows {
+    display: none !important;
+  }
+
+  /* ============================= */
+  /* شكل الصور الصغيرة */
+  .wrap-slick3-dots ul {
+    display: flex !important;
+    justify-content: center;
+    gap: 8px;
+    padding: 0;
+  }
+
+  /* كل عنصر */
+  .wrap-slick3-dots ul li {
+    width: auto;
+    margin: 0 !important;
+  }
+
+  /* الزر */
+  .wrap-slick3-dots ul li button {
+    width: 55px;
+    height: 55px;
+    padding: 0;
+    border: none;
+    background: none;
+  }
+
+  /* إخفاء الشكل الافتراضي */
+  .wrap-slick3-dots ul li button:before {
+    display: none;
+  }
+
+  /* الصورة */
+  .wrap-slick3-dots ul li img {
+    width: 55px;
+    height: 55px;
+    object-fit: cover;
+    border-radius: 6px;
+    opacity: 0.6;
+    transition: 0.3s;
+    cursor: pointer;
+  }
+
+  /* active */
+  .wrap-slick3-dots ul li.slick-active img {
+    opacity: 1;
+    border: 2px solid #000;
+    transform: scale(1.05);
+  }
+  .wrap-slick3-dots ul {
+    display: flex !important;
+    flex-wrap: wrap !important; /* 🔥 ده المهم */
+    justify-content: center;
+    gap: 8px;
+    padding: 0;
+    max-width: 100%;
+  }
+
+  /* كل thumbnail */
+  .wrap-slick3-dots ul li {
+    width: 55px; /* ثابت علشان الشكل يبقى منتظم */
+    flex: 0 0 auto;
+  }
+  /* container perspective */
+  .wrap-slick3-dots ul li {
+    perspective: 800px;
+  }
+
+  /* الصورة */
+  .wrap-slick3-dots ul li img {
+    width: 55px;
+    height: 55px;
+    object-fit: cover;
+    border-radius: 6px;
+    opacity: 0.6;
+    transition:
+      transform 0.5s,
+      opacity 0.3s;
+    transform-style: preserve-3d;
+    cursor: pointer;
+  }
+
+  /* hover flip */
+  .wrap-slick3-dots ul li:hover img {
+    transform: rotateY(180deg) scale(1.05);
+    opacity: 1;
+  }
+
+  /* active */
+  .wrap-slick3-dots ul li.slick-active img {
+    transform: rotateY(180deg) scale(1.1);
+    opacity: 1;
+    border: 2px solid #000;
+  }
 </style>
 <div class="bg0 m-t-23 p-b-140 pt-5">
   <div class="container">
@@ -406,7 +530,6 @@
         >
           Pants
         </button>
-
       </div>
 
       <div class="flex-w flex-c-m m-tb-10">
@@ -467,7 +590,11 @@
               <a
                 href=""
                 class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6 trans-04 js-show-modal1"
-                style="color: rgb(51, 50, 50); font-size: 1.5rem; font-family: 'Cairo', 'sans-serif';"
+                style="
+                  color: rgb(51, 50, 50);
+                  font-size: 1.5rem;
+                  font-family: 'Cairo', 'sans-serif';
+                "
               >
                 {{item.name}}
               </a>
@@ -481,18 +608,18 @@
             </div>
 
             {%if current_user.is_authenticated%}
-              <div class="block2-txt-child2 flex-r p-t-3">
-                <div class="item-actions">
-                  <!-- DELETE -->
-                  <button
-                    class="action-btn delete-btn"
-                    data-id="{{item.id}}"
-                    onclick="openConfirmPopup(this)"
-                  >
-                    <img src="/static/images/icons/trash.svg" alt="Delete" />
-                  </button>
-                </div>
+            <div class="block2-txt-child2 flex-r p-t-3">
+              <div class="item-actions">
+                <!-- DELETE -->
+                <button
+                  class="action-btn delete-btn"
+                  data-id="{{item.id}}"
+                  onclick="openConfirmPopup(this)"
+                >
+                  <img src="/static/images/icons/trash.svg" alt="Delete" />
+                </button>
               </div>
+            </div>
             {%endif%}
           </div>
         </div>
@@ -569,12 +696,20 @@
 
           <div class="col-md-6 col-lg-5 p-b-30">
             <div class="p-r-50 p-t-5 p-lr-0-lg">
-              <h4 class="mtext-105 cl2 js-name-detail p-b-14" id="name" style="font-family: 'Cairo', 'sans-serif';" ></h4>
+              <h4
+                class="mtext-105 cl2 js-name-detail p-b-14"
+                id="name"
+                style="font-family: 'Cairo', 'sans-serif'"
+              ></h4>
 
               <span class="stext-200 cl2" id="price" style="font-size: 1.2rem">
               </span>
 
-              <p class="stext-102 cl3 p-t-23" id="description" style="font-family: 'Cairo', 'sans-serif';;"></p>
+              <p
+                class="stext-102 cl3 p-t-23"
+                id="description"
+                style="font-family: 'Cairo', 'sans-serif'; text-align: right;"
+              ></p>
 
               <!--  -->
               <div class="p-t-33">
@@ -599,21 +734,40 @@
                   <div class="size-203 flex-c-m respon6">Color</div>
 
                   <div class="size-204 respon6-next">
-                    <div class="rs1-select2 bor8 bg0" style="font-family:  'Cairo', 'sans-serif'; visibility: hidden;">
+                    <div
+                      class="rs1-select2 bor8 bg0"
+                      style="
+                        font-family: 'Cairo', 'sans-serif';
+                        visibility: hidden;
+                      "
+                    >
                       <select
-                        style="font-family:  'Cairo', 'sans-serif';"
+                        style="
+                          font-family:
+                            'Cairo', 'sans-serif';
+                        "
                         class="js-select2"
                         name="time"
                         id="color"
                       ></select>
-                      <div class="dropDownSelect2" style="font-family:  'Cairo', 'sans-serif';"></div>
+                      <div
+                        class="dropDownSelect2"
+                        style="
+                          font-family:
+                            'Cairo', 'sans-serif';
+                        "
+                      ></div>
                     </div>
                     <!-- Rendered by static/js/main.js (shows all colors as clickable chips) -->
-                    <div id="colorOptions" class="color-chip-list" dir="auto"></div>
+                    <div
+                      id="colorOptions"
+                      class="color-chip-list"
+                      dir="auto"
+                    ></div>
                   </div>
                 </div>
 
-                <div class="flex-w flex-r-m p-b-10">
+                <div class="flex-w flex-r-m p-b-10" >
                   <div class="size-204 flex-w flex-m respon6-next">
                     <div class="wrap-num-product flex-w m-r-20 m-tb-10">
                       <div
@@ -694,7 +848,7 @@
                   multiple
                   accept="image/*"
                   class="form-control"
-                  required 
+                  required
                 />
               </div>
             </div>
@@ -709,7 +863,7 @@
                 class="form-control mb-3"
                 placeholder="Product Name"
                 id="itemName"
-                style="font-family:  'Cairo', 'sans-serif';"
+                style="font-family: 'Cairo', 'sans-serif'"
               />
 
               <!-- PRICE -->
@@ -726,14 +880,17 @@
                 rows="4"
                 placeholder="Product Description"
                 id="itemDesc"
-                style="font-family:  'Cairo', 'sans-serif';"
+                style="font-family: 'Cairo', 'sans-serif'"
               ></textarea>
 
               <!-- COLORS -->
               <div class="mb-3">
                 <label class="form-label">Colors</label>
 
-                <div id="colorContainer" style="font-family:  'Cairo', 'sans-serif';"></div>
+                <div
+                  id="colorContainer"
+                  style="font-family: 'Cairo', 'sans-serif'"
+                ></div>
 
                 <div class="input-group mt-2">
                   <input
@@ -741,7 +898,9 @@
                     id="newColor"
                     class="form-control"
                     placeholder="Add color"
-                    style="font-family:  'Cairo', 'sans-serif';"
+                    style="
+                      font-family: 'Cairo', 'sans-serif';
+                    "
                   />
                   <button class="btn btn-dark" id="addColor">Add</button>
                 </div>
@@ -921,6 +1080,7 @@
 
         body: JSON.stringify(data),
       });
+      location.reload();
     };
   </script>
   <!-- open the admin add model -->
@@ -994,7 +1154,3 @@
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </div>
-
-
-
-
