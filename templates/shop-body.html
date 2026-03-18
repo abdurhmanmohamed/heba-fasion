@@ -593,7 +593,7 @@
                 style="
                   color: rgb(51, 50, 50);
                   font-size: 1.5rem;
-                  font-family: 'Cairo', 'sans-serif';
+                  font-family: &quot;Cairo&quot;, &quot;sans-serif&quot;;
                 "
               >
                 {{item.name}}
@@ -617,6 +617,12 @@
                   onclick="openConfirmPopup(this)"
                 >
                   <img src="/static/images/icons/trash.svg" alt="Delete" />
+                </button>
+                <button
+                  class="action-btn edit-btn"
+                  onclick="goToEditPage('{{item.id}}')"
+                >
+                  <img src="/static/images/icons/pencil-square.svg" alt="Edit" />
                 </button>
               </div>
             </div>
@@ -699,7 +705,7 @@
               <h4
                 class="mtext-105 cl2 js-name-detail p-b-14"
                 id="name"
-                style="font-family: 'Cairo', 'sans-serif'"
+                style="font-family: &quot;Cairo&quot;, &quot;sans-serif&quot;"
               ></h4>
 
               <span class="stext-200 cl2" id="price" style="font-size: 1.2rem">
@@ -708,7 +714,10 @@
               <p
                 class="stext-102 cl3 p-t-23"
                 id="description"
-                style="font-family: 'Cairo', 'sans-serif'; text-align: right;"
+                style="
+                  font-family: &quot;Cairo&quot;, &quot;sans-serif&quot;;
+                  text-align: right;
+                "
               ></p>
 
               <!--  -->
@@ -737,14 +746,14 @@
                     <div
                       class="rs1-select2 bor8 bg0"
                       style="
-                        font-family: 'Cairo', 'sans-serif';
+                        font-family: &quot;Cairo&quot;, &quot;sans-serif&quot;;
                         visibility: hidden;
                       "
                     >
                       <select
                         style="
                           font-family:
-                            'Cairo', 'sans-serif';
+                            &quot;Cairo&quot;, &quot;sans-serif&quot;;
                         "
                         class="js-select2"
                         name="time"
@@ -754,7 +763,7 @@
                         class="dropDownSelect2"
                         style="
                           font-family:
-                            'Cairo', 'sans-serif';
+                            &quot;Cairo&quot;, &quot;sans-serif&quot;;
                         "
                       ></div>
                     </div>
@@ -767,7 +776,7 @@
                   </div>
                 </div>
 
-                <div class="flex-w flex-r-m p-b-10" >
+                <div class="flex-w flex-r-m p-b-10">
                   <div class="size-204 flex-w flex-m respon6-next">
                     <div class="wrap-num-product flex-w m-r-20 m-tb-10">
                       <div
@@ -863,7 +872,7 @@
                 class="form-control mb-3"
                 placeholder="Product Name"
                 id="itemName"
-                style="font-family: 'Cairo', 'sans-serif'"
+                style="font-family: &quot;Cairo&quot;, &quot;sans-serif&quot;"
               />
 
               <!-- PRICE -->
@@ -880,7 +889,7 @@
                 rows="4"
                 placeholder="Product Description"
                 id="itemDesc"
-                style="font-family: 'Cairo', 'sans-serif'"
+                style="font-family: &quot;Cairo&quot;, &quot;sans-serif&quot;"
               ></textarea>
 
               <!-- COLORS -->
@@ -889,7 +898,7 @@
 
                 <div
                   id="colorContainer"
-                  style="font-family: 'Cairo', 'sans-serif'"
+                  style="font-family: &quot;Cairo&quot;, &quot;sans-serif&quot;"
                 ></div>
 
                 <div class="input-group mt-2">
@@ -899,7 +908,7 @@
                     class="form-control"
                     placeholder="Add color"
                     style="
-                      font-family: 'Cairo', 'sans-serif';
+                      font-family: &quot;Cairo&quot;, &quot;sans-serif&quot;;
                     "
                   />
                   <button class="btn btn-dark" id="addColor">Add</button>
@@ -1150,6 +1159,10 @@
 
       input.value = value + 1;
     };
+    // edit button
+    function goToEditPage(id) {
+      window.location.href = `/admin/edit-item/${id}`;
+    }
   </script>
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

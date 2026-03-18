@@ -572,5 +572,64 @@ def delete(id):
     return jsonify({'statue':'succedssful'}
         
     )
+
+@app.route("/admin/edit-item/<int:id>")
+def edit_item_page(id):
+    item = ItemDetails.query.get_or_404(id)
+    return render_template("edit-item.html", item=item)
+
+@app.route("/admin/delete-image/<int:id>", methods=["POST"])
+def delete_image(id):
+    img = ItemImg.query.get_or_404(id)
+
+    if not img:
+        return jsonify({"error": "not found"}), 404
+
+    db.session.delete(img)
+    db.session.commit()
+
+    return jsonify({"success": True})
+
+@app.route("/admin/update-item/<int:id>", methods=["POST"])
+def update_item(id):
+    data = request.get_json()
+    name = data.get('n')
+    price = data.get("price")
+    description = data.get("description")
+    item = ItemDetails.query.get_or_404(id)
+    print(name, price, description)
+    item.name = name
+    item.price = price
+    item.description = description
+
+    # # handle images here if needed
+    image_links = []
+    for img in data["images"]:
+        header, encoded = img.split(",", 1)
+        binary = base64.b64decode(encoded)
+        ext = imghdr.what(None, binary) or "png"
+        filename = f"{uuid.uuid4()}.{ext}"
+
+        url = f"{SUPABASE_URL}/storage/v1/object/{BUCKET}/{filename}"
+        headers = {
+            "Authorization": f"Bearer {SUPABASE_KEY}",
+            "apikey": SUPABASE_KEY,
+            "Content-Type": f"image/{ext}"
+        }
+
+        r = requests.put(url, headers=headers, data=binary)
+        if r.status_code not in [200, 201]:
+            raise Exception(f"Upload failed: {r.text}")
+
+        # Public URL
+        public_url = f"{SUPABASE_URL}/storage/v1/object/public/{BUCKET}/{filename}"
+        image_links.append(public_url)
+
+    for image in image_links:
+        new_image = ItemImg(img=image, item_id = id)
+        db.session.add(new_image)
+    db.session.commit()
+
+    return jsonify({"status": "success"})
 if __name__ == '__main__':
     app.run(debug=True)
