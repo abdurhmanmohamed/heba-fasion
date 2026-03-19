@@ -1,4 +1,4 @@
-﻿from datetime import datetime
+from datetime import datetime
 # server.py
 
 import base64
@@ -13,9 +13,11 @@ from sqlalchemy import DateTime, String, Integer,ForeignKey
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from flask_login import LoginManager,UserMixin,login_user, login_required,current_user,logout_user
-
+from analytics_blueprint import analytics_bp
 
 app= Flask(__name__)
+
+app.register_blueprint(analytics_bp)
 login_manager = LoginManager(app)
 app.secret_key='abdomohamed'
 # app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres.xnaxxvhxyzruoevrgjga:abdo-mohamed20@aws-1-eu-west-1.pooler.supabase.com:6543/postgres"
