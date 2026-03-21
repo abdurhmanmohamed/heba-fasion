@@ -1,4 +1,4 @@
-﻿from datetime import datetime
+from datetime import datetime
 # server.py
 
 import base64
@@ -20,7 +20,7 @@ app= Flask(__name__)
 app.register_blueprint(analytics_bp)
 login_manager = LoginManager(app)
 app.secret_key='abdomohamed'
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres.xnaxxvhxyzruoevrgjga:abdo-mohamed20@aws-1-eu-west-1.pooler.supabase.com:6543/postgres"
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres.wmkfvadfdnjpmdurnudb:abdo-mohamed20@aws-1-eu-west-2.pooler.supabase.com:6543/postgres"
 # app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
 SUPABASE_URL = "https://wmkfvadfdnjpmdurnudb.supabase.co"
 SUPABASE_KEY = "sb_publishable_aCVfYc4k1oCSUl3twmfjVA_iSlR3gy6"
@@ -524,7 +524,8 @@ def add_item():
 
     # transform the imgs from the bata64 in to images with name and then post it into superbase storage and then same the public url
     image_links = []
-    for img in data["images"]:
+    images_data = data.get("images", [])
+    for img in images_data:
         header, encoded = img.split(",", 1)
         binary = base64.b64decode(encoded)
         ext = imghdr.what(None, binary) or "png"
@@ -571,9 +572,7 @@ def delete(id):
     targeted_item.visability =0
     print(id)
     db.session.commit()
-    return jsonify({'statue':'succedssful'}
-        
-    )
+    return jsonify({'status': 'success'})
 
 @app.route("/admin/edit-item/<int:id>")
 def edit_item_page(id):
@@ -604,9 +603,10 @@ def update_item(id):
     item.price = price
     item.description = description
 
-    # # handle images here if needed
+    # handle images here if needed
     image_links = []
-    for img in data["images"]:
+    images_data = data.get("images", [])
+    for img in images_data:
         header, encoded = img.split(",", 1)
         binary = base64.b64decode(encoded)
         ext = imghdr.what(None, binary) or "png"

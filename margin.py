@@ -8,7 +8,7 @@ from datetime import datetime
 # DATABASE CONNECTIONS
 # ==========================
 sqlite_engine = create_engine("sqlite:///instance/project.db")
-pg_engine = create_engine("postgresql://postgres.xnaxxvhxyzruoevrgjga:abdo-mohamed20@aws-1-eu-west-1.pooler.supabase.com:6543/postgres")
+pg_engine = create_engine("postgresql://postgres.wmkfvadfdnjpmdurnudb:abdo-mohamed20@aws-1-eu-west-2.pooler.supabase.com:6543/postgres")
 
 SQLiteSession = sessionmaker(bind=sqlite_engine)
 PGSession = sessionmaker(bind=pg_engine)
@@ -16,10 +16,8 @@ PGSession = sessionmaker(bind=pg_engine)
 sqlite_session = SQLiteSession()
 pg_session = PGSession()
 
-# ==========================
-# IMPORT YOUR MODELS
-# ==========================
 from server import Admin, ItemDetails, ItemColor, ItemImg, Order, Cart
+Admin.metadata.create_all(pg_engine) # create tables on pg
 
 # ==========================
 # GENERIC MERGE FUNCTION
@@ -57,11 +55,13 @@ def merge_table(model, use_updated_at=False):
 # ==========================
 def reset_sequence(table_name):
     try:
+        # Use double quotes around table name for reserved words like "order"
+        quoted_table = f'"{table_name}"'
         pg_session.execute(text(f"""
             SELECT setval(
                 pg_get_serial_sequence('{table_name}', 'id'),
                 COALESCE(MAX(id), 1)
-            ) FROM {table_name};
+            ) FROM {quoted_table};
         """))
         pg_session.commit()
         print(f"🔧 Sequence fixed for {table_name}")
@@ -85,9 +85,9 @@ try:
 
     # 3️⃣ Fix sequences
     reset_sequence("admin")
-    reset_sequence("item_details")
-    reset_sequence("item_color")
-    reset_sequence("item_img")
+    reset_sequence("itemdetails")
+    reset_sequence("itemcolor")
+    reset_sequence("itemimg")
     reset_sequence("order")
     reset_sequence("cart")
 

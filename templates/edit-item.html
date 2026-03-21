@@ -264,7 +264,7 @@
     </div>
 
     <script>
-      let newImages = [];
+      let addedImagesData = [];
 
       function setMain(src) {
         document.getElementById("mainImage").src = src;
@@ -288,39 +288,68 @@
           [...this.files].forEach((file) => {
             let reader = new FileReader();
             reader.onload = (e) => {
-              newImages.push(e.target.result);
+              const imageData = e.target.result;
+              addedImagesData.push(imageData);
+
               let div = document.createElement("div");
               div.className = "thumb-wrapper";
-              div.innerHTML = `<img src="${e.target.result}">
-                              <button
-                            class="delete-btn-img"
-                            onclick=""
-                          >
-                            ✕
-                          </button>
+              // Add a way to identify and remove this image from addedImagesData
+              div.dataset.index = addedImagesData.length - 1;
+              div.innerHTML = `
+                <img src="${imageData}">
+                <button
+                  class="delete-btn-img"
+                  onclick="removeNewImage(this)"
+                >
+                  ✕
+                </button>
               `;
-              
+
               document.getElementById("thumbContainer").appendChild(div);
             };
             reader.readAsDataURL(file);
           });
         });
 
+      function removeNewImage(btn) {
+        const wrapper = btn.closest(".thumb-wrapper");
+        const index = parseInt(wrapper.dataset.index);
+        // We can't easily splice by index if multiple are removed, 
+        // but for simplicity we'll just filter out this specific base64 string
+        const src = wrapper.querySelector("img").src;
+        addedImagesData = addedImagesData.filter((img) => img !== src);
+        wrapper.remove();
+      }
+
       function saveEdit(id) {
+        const nameInput = document.getElementById("n");
+        const priceInput = document.getElementById("price");
+        const descInput = document.getElementById("desc");
+
         let data = {
-          n: n.value,
-          price: price.value,
-          description: desc.value,
-          images: newImages,
+          n: nameInput.value,
+          price: priceInput.value,
+          description: descInput.value,
+          images: addedImagesData,
         };
+
         fetch(`/admin/update-item/${id}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data),
-        }).then(() => {
-          alert("Updated successfully 🚀");
-          location.href = "/";
-        });
+        })
+          .then((res) => {
+            if (res.ok) {
+              alert("Updated successfully 🚀");
+              location.href = "/";
+            } else {
+              alert("Failed to update item. Please try again.");
+            }
+          })
+          .catch((err) => {
+            console.error(err);
+            alert("An error occurred while updating.");
+          });
       }
     </script>
   </body>

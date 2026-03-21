@@ -1,4 +1,4 @@
-﻿<style>
+<style>
   .color-item {
     font-family: "Cairo", "sans-serif";
     font-weight: 600;
@@ -1086,10 +1086,17 @@
         headers: {
           "Content-Type": "application/json",
         },
-
         body: JSON.stringify(data),
+      }).then(res => {
+        if (res.ok) {
+          location.reload();
+        } else {
+          alert("Failed to save product. Please try again.");
+        }
+      }).catch(err => {
+        console.error(err);
+        alert("An error occurred while saving the product.");
       });
-      location.reload();
     };
   </script>
   <!-- open the admin add model -->
