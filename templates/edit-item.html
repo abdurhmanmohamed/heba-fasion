@@ -237,10 +237,31 @@
               id="price"
               class="input"
               value="{{item.price}}"
-              placeholder="Price"
+              placeholder="Current Price"
               style="
                 font-family: 'Cairo', sans-serif;
-                font-size: 3 rem;
+                font-size: 1.2rem;
+              "
+            />
+            <input
+              id="old_price"
+              class="input"
+              value="{{item.old_price if item.old_price else ''}}"
+              placeholder="Old Price (Optional)"
+              style="
+                font-family: 'Cairo', sans-serif;
+                font-size: 1.2rem;
+              "
+            />
+            <input
+              id="discount_label"
+              class="input"
+              value="{{item.discount_label if item.discount_label else ''}}"
+              placeholder="Discount Label (e.g. 20% OFF)"
+              style="
+                font-family: 'Cairo', sans-serif;
+                font-size: 1.2rem;
+                text-align: right;
               "
             />
             <textarea
@@ -329,6 +350,8 @@
         let data = {
           n: nameInput.value,
           price: priceInput.value,
+          old_price: document.getElementById("old_price").value,
+          discount_label: document.getElementById("discount_label").value,
           description: descInput.value,
           images: addedImagesData,
         };

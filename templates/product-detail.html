@@ -1,0 +1,499 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>{{ item.name }} | Heba Fashion</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Vendor CSS (Reusing existing ones) -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap.min.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='fonts/font-awesome-4.7.0/css/font-awesome.min.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='fonts/iconic/css/material-design-iconic-font.min.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='vendor/animate/animate.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='vendor/animsition/css/animsition.min.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='vendor/select2/select2.min.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='vendor/slick/slick.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='vendor/MagnificPopup/magnific-popup.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='vendor/perfect-scrollbar/perfect-scrollbar.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='css/util.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='css/main.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='css/custom.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='css/product-detail.css') }}"
+    />
+
+    <style>
+      body *:lang(ar),
+      body *:lang(arb),
+      body *[dir="rtl"] {
+        font-family: "Cairo", sans-serif !important;
+        direction: rtl;
+      }
+
+      /* Custom slick dots styling for product detail */
+      .slick3-dots li img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 5px;
+      }
+      .slick3-dots li {
+        width: 60px;
+        height: 80px;
+        margin: 0 5px;
+      }
+    </style>
+  </head>
+  <body class="animsition">
+    <!-- Header -->
+    {% include 'header.html' %}
+
+    <!-- Breadcrumb -->
+    <div class="container product-detail-container">
+      <div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg">
+        <a href="{{ url_for('home') }}" class="stext-109 cl8 hov-cl1 trans-04">
+          Home
+          <i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
+        </a>
+
+        <a href="{{ url_for('shop') }}" class="stext-109 cl8 hov-cl1 trans-04">
+          Shop
+          <i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
+        </a>
+
+        <span class="stext-109 cl4"> {{ item.name }} </span>
+      </div>
+
+      <div class="row p-t-50 product-detail-row">
+        <!-- Product Images Slider -->
+        <div class="col-md-6 col-lg-7 p-b-30">
+          <div class="p-l-25 p-r-30 p-lr-0-lg">
+            <div class="wrap-slick3 flex-sb flex-w">
+              <div class="wrap-slick3-dots"></div>
+              <div class="wrap-slick3-arrows flex-sb-m flex-w"></div>
+
+              <div class="slick3 gallery-lb">
+                {% for img in item.item_imgs %}
+                <div class="item-slick3" data-thumb="{{ img.img }}">
+                  <div class="wrap-pic-w pos-relative">
+                    <img src="{{ img.img }}" alt="IMG-PRODUCT" />
+
+                    <a
+                      class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04"
+                      href="{{ img.img }}"
+                    >
+                      <i class="fa fa-expand"></i>
+                    </a>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product Details -->
+        <div class="col-md-6 col-lg-5 p-b-30">
+          <div class="product-info-column p-r-50 p-lr-0-lg">
+            <h1 class="product-name">{{ item.name }}</h1>
+
+            <div class="product-price-wrap">
+              <span class="price-new">{{ item.price }} E£</span>
+              {% if item.old_price %}
+              <span class="price-old">{{ item.old_price }} E£</span>
+              {% endif %} {% if item.discount_label %}
+              <span class="discount-badge-detail"
+                >{{ item.discount_label }}</span
+              >
+              {% endif %}
+            </div>
+
+            <div class="product-description-brief" dir="auto">
+              {{ item.description }}
+            </div>
+
+            <!-- Selectors -->
+            <div class="p-t-33">
+              <!-- Size -->
+              <div class="selector-group">
+                <div class="flex-sb-m p-b-10">
+                  <span class="selector-label">Select Size</span>
+                  <a href="#" class="size-guide-link">Size Guide</a>
+                </div>
+
+                <div class="size-chips-wrap" id="size-chips">
+                  <button class="size-chip js-size-chip" data-size="55-65 Kg">
+                    55-65 Kg
+                  </button>
+                  <button class="size-chip js-size-chip" data-size="65-75 Kg">
+                    65-75 Kg
+                  </button>
+                  <button class="size-chip js-size-chip" data-size="75-85 Kg">
+                    75-85 Kg
+                  </button>
+                  <button class="size-chip js-size-chip" data-size="85-95 Kg">
+                    85-95 Kg
+                  </button>
+                </div>
+                <input type="hidden" id="size" value="Choose a size" />
+              </div>
+
+              <!-- Color -->
+              <div class="selector-group">
+                <span class="selector-label">Color</span>
+                <div class="color-dots-wrap" id="color-chips">
+                  {% for color in item.item_colors %}
+                  <div
+                    class="color-chip js-color-chip-detail"
+                    data-color="{{ color.color }}"
+                  >
+                    <!-- Using background-color from data attribute via JS to avoid inline CSS errors -->
+                    <div
+                      class="color-dot-inner"
+                      data-bg-color="{{ color.color }}"
+                    ></div>
+                    <span>{{ color.color }}</span>
+                  </div>
+                  {% endfor %}
+                </div>
+                <input type="hidden" id="selected-color" value="" />
+              </div>
+
+              <!-- Actions -->
+              <div class="actions-wrap">
+                <div class="quantity-wrap">
+                  <div class="qty-btn btn-num-product-down-detail">
+                    <i class="zmdi zmdi-minus"></i>
+                  </div>
+
+                  <input
+                    class="qty-input num-product"
+                    type="number"
+                    name="num-product"
+                    value="1"
+                    id="amount"
+                    dir="ltr"
+                    style="
+                      font-family: &quot;Inter&quot;, sans-serif;
+                      font-variant-numeric: tabular-nums;
+                    "
+                  />
+
+                  <div class="qty-btn btn-num-product-up-detail">
+                    <i class="zmdi zmdi-plus"></i>
+                  </div>
+                </div>
+
+                <button
+                  class="btn-add-cart"
+                  id="add-to-cart-detail"
+                  data-id="{{ item.id }}"
+                >
+                  Add to cart
+                </button>
+              </div>
+
+              <!-- Product Accordion -->
+              <div class="product-accordion m-t-40">
+                <div class="accordion-item">
+                  <button
+                    class="accordion-header"
+                    type="button"
+                    data-toggle="collapse"
+                    data-target="#descCollapse"
+                  >
+                    Product Description
+                    <i class="zmdi zmdi-chevron-down"></i>
+                  </button>
+                  <div id="descCollapse" class="collapse show">
+                    <div class="accordion-body">
+                      <p>{{ item.description }}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="accordion-item">
+                  <button
+                    class="accordion-header collapsed"
+                    type="button"
+                    data-toggle="collapse"
+                    data-target="#shippingCollapse"
+                  >
+                    Shipping & Returns
+                    <i class="zmdi zmdi-chevron-down"></i>
+                  </button>
+                  <div id="shippingCollapse" class="collapse">
+                    <div class="accordion-body">
+                      <p>
+                        Fast Shipping Everywere All Over The Country. Easy
+                        returns within 14 days.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Related Products -->
+      <div class="related-products-section">
+        <div class="related-header">
+          <h3 class="section-title">You May Also Like</h3>
+          <div class="scroll-hint">
+            <span>Scroll</span>
+            <i class="fa fa-arrow-right"></i>
+          </div>
+        </div>
+
+        <div class="related-scroll-track">
+          {% for relate in related_items %}
+          <a href="{{ url_for('product_detail', item_id=relate.id) }}" class="relate-card">
+            <div class="relate-card-img">
+              {% if relate.discount_label %}
+              <div class="relate-discount-badge">{{ relate.discount_label }}</div>
+              {% endif %}
+              <img
+                src="{{ relate.item_imgs[0].img if relate.item_imgs|length > 0 else url_for('static', filename='images/blog-06.jpg') }}"
+                alt="{{ relate.name }}"
+                loading="lazy"
+              />
+              <div class="relate-card-overlay">
+                <span>View Product</span>
+              </div>
+            </div>
+            <div class="relate-card-info">
+              <p class="relate-card-name">{{ relate.name }}</p>
+              <div class="relate-card-price">
+                {% if relate.old_price %}
+                <span class="relate-old-price">{{ relate.old_price }} E£</span>
+                {% endif %}
+                <span class="relate-new-price">{{ relate.price }} E£</span>
+              </div>
+            </div>
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    {% include 'footer.html' %}
+
+    <!-- Premium Cart Confirmation Modal -->
+    <div id="cart-confirm-overlay" class="cart-confirm-overlay">
+      <div class="cart-confirm-modal">
+        <div class="cart-confirm-icon">
+          <i class="zmdi zmdi-check-circle"></i>
+        </div>
+        <h3 class="cart-confirm-title">Added to Cart!</h3>
+        <p class="cart-confirm-text">
+          Your item has been successfully added to the shopping cart.
+        </p>
+        <div class="cart-confirm-buttons">
+          <button class="btn-continue-shopping" onclick="closeCartConfirm()">
+            Continue Shopping
+          </button>
+          <a href="{{ url_for('check_out') }}" class="btn-goto-checkout"
+            >Checkout Now</a
+          >
+        </div>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='vendor/jquery/jquery-3.2.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/animsition/js/animsition.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/bootstrap/js/popper.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/select2/select2.min.js') }}"></script>
+    <script>
+      $(".js-select2").each(function () {
+        $(this).select2({
+          minimumResultsForSearch: 20,
+          dropdownParent: $(this).next(".dropDownSelect2"),
+        });
+      });
+    </script>
+    <script src="{{ url_for('static', filename='vendor/slick/slick.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/slick-custom.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/MagnificPopup/jquery.magnific-popup.min.js') }}"></script>
+    <script>
+      $(".gallery-lb").each(function () {
+        $(this).magnificPopup({
+          delegate: "a",
+          type: "image",
+          gallery: {
+            enabled: true,
+          },
+          mainClass: "mfp-fade",
+        });
+      });
+    </script>
+    <script src="{{ url_for('static', filename='vendor/isotope/isotope.pkgd.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/sweetalert/sweetalert.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
+    <script>
+      $(".js-pscroll").each(function () {
+        $(this).css("position", "relative");
+        $(this).css("overflow", "hidden");
+        var ps = new PerfectScrollbar(this, {
+          wheelSpeed: 1,
+          scrollingThreshold: 1000,
+          wheelPropagation: false,
+        });
+
+        $(window).on("resize", function () {
+          ps.update();
+        });
+      });
+    </script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+    <script>
+      // Custom logic for product detail page
+      $(document).ready(function () {
+        // Slick Slider is initialized by slick-custom.js
+        // If we need custom logic, we can catch it here after init
+
+        // Apply background colors to dots properly
+        $(".color-dot-inner").each(function () {
+          var color = $(this).data("bg-color");
+          if (color) {
+            $(this).css("background-color", color);
+            if (color.toLowerCase() === "white") {
+              $(this).css("border", "1px solid #ddd");
+            }
+          }
+        });
+
+        // Color chip selection
+        $(".js-color-chip-detail").on("click", function () {
+          $(".js-color-chip-detail").removeClass("is-active");
+          $(this).addClass("is-active");
+          $("#selected-color").val($(this).data("color"));
+        });
+
+        // Size chip selection
+        $(".js-size-chip").on("click", function () {
+          $(".js-size-chip").removeClass("is-active");
+          $(this).addClass("is-active");
+          $("#size").val($(this).data("size"));
+        });
+
+        // Quantity buttons
+        $(".btn-num-product-down-detail").on("click", function () {
+          var numProduct = Number($("#amount").val());
+          if (numProduct > 1) $("#amount").val(numProduct - 1);
+        });
+
+        $(".btn-num-product-up-detail").on("click", function () {
+          var numProduct = Number($("#amount").val());
+          $("#amount").val(numProduct + 1);
+        });
+
+        // Add to Cart
+        $("#add-to-cart-detail").on("click", function () {
+          var itemId = $(this).data("id");
+          var amount = $("#amount").val();
+          var color = $("#selected-color").val();
+          var size = $("#size").val();
+
+          if (size === "Choose a size") {
+            swal("Please choose a size", "", "error");
+            return;
+          }
+
+          if (!color && $(".js-color-chip-detail").length > 0) {
+            swal("Please choose a color", "", "error");
+            return;
+          }
+
+          fetch("/add-to-cart", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              id: itemId,
+              amount: amount,
+              color: color,
+              size: size,
+            }),
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              if (data.status === "success") {
+                $("#cart-confirm-overlay").addClass("active");
+              } else {
+                swal("Error", data.message || "Failed to add item", "error");
+              }
+            })
+            .catch((err) => {
+              console.error(err);
+              swal("Error", "Could not connect to server", "error");
+            });
+        });
+
+        window.closeCartConfirm = function () {
+          $("#cart-confirm-overlay").removeClass("active");
+        };
+      });
+    </script>
+  </body>
+</html>

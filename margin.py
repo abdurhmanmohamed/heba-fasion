@@ -7,8 +7,10 @@ from datetime import datetime
 # ==========================
 # DATABASE CONNECTIONS
 # ==========================
+PRODUCTION_DB = 'postgresql://postgres.wmkfvadfdnjpmdurnudb:abdo-mohamed20@aws-1-eu-west-2.pooler.supabase.com:6543/postgres'
+EDITS_DB  = 'postgresql://postgres.lxelklwgirketewzssix:abdo-mohamed20@aws-1-eu-west-1.pooler.supabase.com:6543/postgres'
 sqlite_engine = create_engine("sqlite:///instance/project.db")
-pg_engine = create_engine("postgresql://postgres.wmkfvadfdnjpmdurnudb:abdo-mohamed20@aws-1-eu-west-2.pooler.supabase.com:6543/postgres")
+pg_engine = create_engine(EDITS_DB)
 
 SQLiteSession = sessionmaker(bind=sqlite_engine)
 PGSession = sessionmaker(bind=pg_engine)
@@ -16,7 +18,7 @@ PGSession = sessionmaker(bind=pg_engine)
 sqlite_session = SQLiteSession()
 pg_session = PGSession()
 
-from server import Admin, ItemDetails, ItemColor, ItemImg, Order, Cart
+from server import Admin, ItemDetails, ItemColor, ItemImg, Order, Cart, ShippingPrice
 Admin.metadata.create_all(pg_engine) # create tables on pg
 
 # ==========================
@@ -82,6 +84,7 @@ try:
     merge_table(ItemImg)
     merge_table(Order)
     merge_table(Cart)
+    merge_table(ShippingPrice)
 
     # 3️⃣ Fix sequences
     reset_sequence("admin")
@@ -90,6 +93,7 @@ try:
     reset_sequence("itemimg")
     reset_sequence("order")
     reset_sequence("cart")
+    reset_sequence("shipping_prices")
 
     print("\n🚀 MIGRATION COMPLETED SUCCESSFULLY")
 

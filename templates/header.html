@@ -75,10 +75,39 @@
 					<ul class="main-menu">
 						<li class="active-menu">
 							<a href="{{url_for('home')}}">Home</a>
-
 						</li>
 
-						<li><a href="{{url_for('shop')}}">Shop</a></li>
+						<li class="nav-item custom-dropdown">
+							<a href="{{url_for('shop')}}">
+								Shop
+							</a>
+							<ul class="sub-menu glass-dropdown">
+								<div class="dropdown-header-title">Our Collection</div>
+								<li><a href="{{url_for('shop')}}?filter=*">
+									<i class="fa fa-th-large"></i> <span>All Products</span>
+								</a></li>
+								
+								<div class="dropdown-divider-text">Featured</div>
+								<li><a class="hot-price-link" href="{{url_for('shop')}}?filter=.hot-price">
+									<i class="fa fa-fire"></i> <span>Hot Prices</span>
+								</a></li>
+								<li><a class="top-selling-link" href="{{url_for('shop')}}?filter=.top-selling">
+									<i class="fa fa-star"></i> <span>Top Selling</span>
+								</a></li>
+								
+								<div class="dropdown-divider-text">Categories</div>
+								<li><a href="{{url_for('shop')}}?filter=.جيبه">
+									<i class="fa fa-female"></i> <span>Skirts (جيبه)</span>
+								</a></li>
+								<li><a href="{{url_for('shop')}}?filter=.شميز">
+									<i class="fa fa-shopping-bag"></i> <span>Shmiz (شميز)</span>
+								</a></li>
+								<li><a href="{{url_for('shop')}}?filter=.بنطلون">
+									<i class="fa fa-columns"></i> <span>Pants (بنطلون)</span>
+								</a></li>
+							</ul>
+						</li>
+
 						<li>
 							<a href="{{url_for('shoping_cart')}}">Buy Now</a>
 						</li>
@@ -98,7 +127,7 @@
 						<a href="{{ url_for('analytics.analysis') }}" class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10" title="Analytics" style="text-decoration: none;">
 							<i class="zmdi zmdi-trending-up"></i>
 						</a>
-						<li class="nav-item dropdown hov-cl1" style="size: 40px;">
+						<li class="nav-item dropdown hov-cl1" style="size: 40px; list-style: none;">
 							<a  class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 								<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
 									<path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
@@ -184,6 +213,17 @@
 
 			<li>
 				<a href="{{url_for('shop')}}">Shop</a>
+				<ul class="sub-menu-m mobile-categories">
+					<li><a href="{{url_for('shop')}}?filter=*"><i class="fa fa-th-large"></i> All Products</a></li>
+					<li><a href="{{url_for('shop')}}?filter=.hot-price"><i class="fa fa-fire text-danger"></i> Hot Prices</a></li>
+					<li><a href="{{url_for('shop')}}?filter=.top-selling"><i class="fa fa-star text-warning"></i> Top Selling <span class="badge bg-warning ms-2" style="font-size: 10px; border-radius: 5px;">POPULAR</span></a></li>
+					<li><a href="{{url_for('shop')}}?filter=.جيبه"><i class="fa fa-female"></i> Skirts</a></li>
+					<li><a href="{{url_for('shop')}}?filter=.شميز"><i class="fa fa-shopping-bag"></i> Shmiz</a></li>
+					<li><a href="{{url_for('shop')}}?filter=.بنطلون"><i class="fa fa-columns"></i> Pants</a></li>
+				</ul>
+				<span class="arrow-main-menu-m">
+					<i class="fa fa-angle-right" aria-hidden="true"></i>
+				</span>
 			</li>
 
 			<li>

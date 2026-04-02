@@ -1,4 +1,4 @@
-﻿
+
 (function ($) {
     "use strict";
 
@@ -131,13 +131,12 @@
     var $topeContainer = $('.isotope-grid');
     var $filter = $('.filter-tope-group');
 
-    // filter items on button click
+    // filter items on click
     $filter.each(function () {
-        $filter.on('click', 'button', function () {
+        $filter.on('click', 'button, .category-card', function () {
             var filterValue = $(this).attr('data-filter');
             $topeContainer.isotope({filter: filterValue});
         });
-        
     });
 
     // init Isotope
@@ -153,9 +152,27 @@
                 }
             });
         });
+
+        // Auto-filter based on URL parameter
+        var urlParams = new URLSearchParams(window.location.search);
+        var filter = urlParams.get('filter');
+        if (filter) {
+            $topeContainer.isotope({ filter: filter });
+            // Update active state
+            $('.filter-tope-group button, .filter-tope-group .category-card').removeClass('how-active1');
+            $('[data-filter="' + filter + '"]').addClass('how-active1');
+            
+            // If it's a card, scroll to it if needed
+            var $activeCard = $('.category-card[data-filter="' + filter + '"]');
+            if ($activeCard.length) {
+                $('.category-nav-wrapper').animate({
+                    scrollLeft: $activeCard.position().left - 20
+                }, 500);
+            }
+        }
     });
 
-    var isotopeButton = $('.filter-tope-group button');
+    var isotopeButton = $('.filter-tope-group button, .filter-tope-group .category-card');
 
     $(isotopeButton).each(function(){
         $(this).on('click', function(){
@@ -522,7 +539,11 @@ $(document).on('click', '.js-show-modal1', function(e){
                     $('.slick3').slick('unslick');
                 }
                 $('#name').text(response.name);
-                $('#price').text(response.price + " EGP");
+                if (response.old_price) {
+                    $('#price').html(`<span class="modal-price-old">${response.old_price} E£</span> <span class="modal-price-new">${response.price} E£</span>`);
+                } else {
+                    $('#price').html(`<span class="modal-price-new">${response.price} E£</span>`);
+                }
                 $('#description').text(response.description);
 
                 // update images
@@ -582,7 +603,7 @@ $(document).on('click', '.js-show-modal1', function(e){
                 }
 
                 renderColorChips(variants, response.colors || []);
-                $('#add-cart').attr('data-item-id', item_id);
+                $('#add-cart, #checkout-now').attr('data-item-id', item_id);
                 $('#color').trigger('change');
                 // show modal
                 $('.js-modal1').addClass('show-modal1');
@@ -594,7 +615,7 @@ $(document).on('click', '.js-show-modal1', function(e){
     $(document).on('change', '#color', function(){
         const opt = $(this).find('option:selected');
         const variantId = opt.attr('data-variant-id') || '';
-        $('#add-cart').attr('data-variant-id', variantId);
+        $('#add-cart, #checkout-now').attr('data-variant-id', variantId);
         setActiveColorChip($(this).val());
     });
 
@@ -619,7 +640,7 @@ $(document).on('click', '.js-show-modal1', function(e){
         }
 
         if (variantId) {
-            $('#add-cart').attr('data-variant-id', variantId);
+            $('#add-cart, #checkout-now').attr('data-variant-id', variantId);
         }
 
         setActiveColorChip(color);

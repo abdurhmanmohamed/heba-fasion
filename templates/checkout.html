@@ -4,9 +4,17 @@
     <title>Contact</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600&display=swap" rel="stylesheet">
-	<link
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
       rel="icon"
       type="image/png"
       href="{{ url_for('static', filename='images/icons/favicon.png') }}"
@@ -68,250 +76,451 @@
       href="{{ url_for('static', filename='css/main.css') }}"
     />
 
+    <style>
+      /* PAGE BACKGROUND */
 
-	<style>
+      body {
+        background: linear-gradient(135deg, #eef1f7, #dfe5f3);
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+      body *:lang(ar),
+      body *:lang(arb),
+      body *[dir="rtl"] {
+        font-family: "Cairo", Arial, sans-serif !important;
+        direction: rtl;
+      }
 
-/* PAGE BACKGROUND */
+      /* CENTER SECTION */
 
-		body{
-			background: linear-gradient(135deg,#eef1f7,#dfe5f3);
-			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-		}
-		body *:lang(ar),
-		body *:lang(arb),
-		body *[dir="rtl"] {
-			font-family: 'Cairo', Arial, sans-serif !important;
-			direction: rtl;}
+      .contact-bg {
+        min-height: 80vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 40px 15px;
+      }
 
+      /* CARD */
 
-		/* CENTER SECTION */
+      .contact-card {
+        background: white;
+        border-radius: 18px;
+        padding: 30px 30px;
+        width: 100%;
+        max-width: 700px;
 
-		.contact-bg{
-			min-height:80vh;
-			display:flex;
-			justify-content:center;
-			align-items:center;
-			padding:40px 15px;
-		}
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
 
+        transition: 0.3s;
+      }
 
-		/* CARD */
+      .contact-card:hover {
+        transform: translateY(-3px);
+      }
 
-		.contact-card{
-			background:white;
-			border-radius:18px;
-			padding:45px 40px;
-			width:100%;
-			max-width:700px;
+      /* FORM GRID */
 
-			box-shadow:
-				0 30px 60px rgba(0,0,0,0.15);
+      .contact-card form {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 22px;
+      }
 
-			transition:.3s;
-		}
+      /* FULL WIDTH ELEMENTS */
 
-		.contact-card:hover{
-			transform:translateY(-3px);
-		}
+      .contact-card textarea,
+      .contact-card button,
+      .contact-card select {
+        grid-column: span 2;
+      }
 
+      /* INPUT GROUP */
 
-		/* FORM GRID */
+      .input-group {
+        position: relative;
+      }
 
-		.contact-card form{
-			display:grid;
-			grid-template-columns:1fr 1fr;
-			gap:22px;
-		}
+      /* INPUTS */
 
+      .input-group input,
+      .input-group textarea,
+      .input-group select {
+        width: 100%;
+        padding: 14px 14px;
+        border-radius: 8px;
+        border: 1.8px solid #d6dae6;
+        font-size: 15px;
 
-		/* FULL WIDTH ELEMENTS */
+        background: #f9faff;
+        outline: none;
 
-		.contact-card textarea,
-		.contact-card button,
-		.contact-card select{
-			grid-column:span 2;
-		}
+        transition: all 0.25s ease;
+      }
 
+      /* INPUT FOCUS */
 
-		/* INPUT GROUP */
+      .input-group input:focus,
+      .input-group textarea:focus,
+      .input-group select:focus {
+        border-color: #717fe0;
+        background: white;
 
-		.input-group{
-			position:relative;
-		}
+        box-shadow: 0 0 0 3px rgba(113, 127, 224, 0.15);
+      }
 
+      /* SELECT STYLING */
 
-		/* INPUTS */
+      .input-group select {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23717fe0' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 14px center;
+        background-size: 16px;
+        cursor: pointer;
+        color: #333;
+        font-family: "Cairo", sans-serif;
+      }
 
-		.input-group input,
-		.input-group textarea,
-		.input-group select{
-			width:100%;
-			padding:14px 14px;
-			border-radius:8px;
-			border:1.8px solid #d6dae6;
-			font-size:15px;
+      body *[dir="rtl"] .input-group select {
+        background-position: left 14px center;
+      }
 
-			background:#f9faff;
-			outline:none;
+      .input-group select:hover {
+        border-color: #b0b6cf;
+      }
 
-			transition:all .25s ease;
-		}
+      /* FLOATING LABEL */
 
+      .input-group label {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: white;
+        padding: 0 6px;
+        color: #7a7f92;
+        font-size: 14px;
+        pointer-events: none;
 
-		/* INPUT FOCUS */
+        transition: 0.2s;
+      }
 
-		.input-group input:focus,
-		.input-group textarea:focus,
-		.input-group select:focus{
-			border-color:#717fe0;
-			background:white;
+      /* LABEL ANIMATION */
 
-			box-shadow:0 0 0 3px rgba(113,127,224,0.15);
-		}
+      .input-group input:focus + label,
+      .input-group input:not(:placeholder-shown) + label,
+      .input-group textarea:focus + label,
+      .input-group textarea:not(:placeholder-shown) + label {
+        top: -7px;
+        font-size: 12px;
+        color: #717fe0;
+      }
 
+      /* TEXTAREA */
 
-		/* FLOATING LABEL */
+      textarea {
+        resize: none;
+      }
 
-		.input-group label{
-			position:absolute;
-			left:12px;
-			top:50%;
-			transform:translateY(-50%);
-			background:white;
-			padding:0 6px;
-			color:#7a7f92;
-			font-size:14px;
-			pointer-events:none;
+      /* BUTTON */
 
-			transition:.2s;
-		}
+      .submit-btn {
+        padding: 14px;
+        border: none;
+        border-radius: 8px;
 
+        background: linear-gradient(135deg, #222, #444);
+        color: white;
 
-		/* LABEL ANIMATION */
+        font-size: 16px;
+        font-weight: 600;
+        letter-spacing: 0.3px;
 
-		.input-group input:focus + label,
-		.input-group input:not(:placeholder-shown) + label,
-		.input-group textarea:focus + label,
-		.input-group textarea:not(:placeholder-shown) + label{
-			top:-7px;
-			font-size:12px;
-			color:#717fe0;
-		}
+        cursor: pointer;
+        transition: 0.25s;
+      }
 
+      /* BUTTON HOVER */
 
-		/* TEXTAREA */
+      .submit-btn:hover {
+        background: linear-gradient(135deg, #717fe0, #5666da);
+        transform: translateY(-2px);
 
-		textarea{
-			resize:none;
-		}
+        box-shadow: 0 10px 25px rgba(113, 127, 224, 0.35);
+      }
 
+      /* ORDER SUMMARY & PAYMENT STYLE */
+      .summary-box {
+        background: white;
+        border-radius: 16px;
+        padding: 25px;
+        margin-bottom: 25px;
+        border: 1px solid rgba(113, 127, 224, 0.1);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+        grid-column: span 2;
+        position: relative;
+        overflow: hidden;
+      }
 
-		/* BUTTON */
+      .summary-box::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(135deg, #717fe0, #5666da);
+      }
 
-		.submit-btn{
-			padding:14px;
-			border:none;
-			border-radius:8px;
+      .summary-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+        font-family: "Cairo", sans-serif;
+      }
 
-			background:linear-gradient(135deg,#222,#444);
-			color:white;
+      .summary-label {
+        color: #7a7f92;
+        font-size: 1.05rem;
+        font-weight: 500;
+      }
 
-			font-size:16px;
-			font-weight:600;
-			letter-spacing:.3px;
+      .summary-value {
+        font-weight: 600;
+        font-size: 1.15rem;
+        color: #2b3044;
+      }
 
-			cursor:pointer;
-			transition:.25s;
-		}
+      .summary-total-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 2px dashed #e9ecef;
+        font-family: "Cairo", sans-serif;
+      }
 
+      .summary-total-label {
+        color: #111;
+        font-size: 1.2rem;
+        font-weight: 700;
+      }
 
-		/* BUTTON HOVER */
+      .summary-total-value {
+        font-weight: 800;
+        font-size: 1.6rem;
+        color: #717fe0;
+      }
 
-		.submit-btn:hover{
-			background:linear-gradient(135deg,#717fe0,#5666da);
-			transform:translateY(-2px);
+      .discount-notice {
+        background: #fff5f5;
+        color: #e63946;
+        padding: 12px;
+        border-radius: 8px;
+        border-left: 4px solid #e63946;
+        font-weight: 600;
+        margin-bottom: 15px;
+        text-align: right;
+        font-family: "Cairo", sans-serif;
+      }
 
-			box-shadow:0 10px 25px rgba(113,127,224,0.35);
-		}
+      .payment-method-box {
+        background: #f0f7ff;
+        padding: 20px;
+        border-radius: 12px;
+        border: 1px solid #d0e6ff;
+        margin-top: 10px;
+        grid-column: span 2;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-family: "Cairo", sans-serif;
+      }
 
+      .payment-title {
+        color: #444;
+        font-weight: 600;
+        font-size: 1.1rem;
+      }
 
-		/* MOBILE */
+      .payment-value {
+        color: #717fe0;
+        font-weight: 700;
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+      }
 
-		@media(max-width:700px){
+      .payment-value i {
+        margin-left: 10px;
+      }
 
-			.contact-card form{
-				grid-template-columns:1fr;
-			}
-
-			.contact-card textarea,
-			.contact-card button,
-			.contact-card select{
-				grid-column:span 1;
-			}
-
-		}
-
-	</style>
+      @media (max-width: 700px) {
+        .contact-card form {
+          grid-template-columns: 1fr;
+        }
+        .contact-card textarea,
+        .contact-card button,
+        .contact-card select,
+        .summary-box,
+        .payment-method-box {
+          grid-column: span 1;
+        }
+      }
+    </style>
   </head>
 
   <body class="animsition">
     {% include "header.html" %}
-	<section class="bg-img1 txt-center p-lr-0 p-tb-0	contact-bg">
-		<h2 class="ltext-201 cl2 p-t-0 p-b-0 respon1" style="color: black;">
-			Checkout  Form
-		</h2>
-	</section>	
+    <style>
+      .title-height {
+        min-height: 25vh !important;
+        padding-top: 80px !important;
+        align-items: flex-start !important;
+      }
+    </style>
+    <section class="bg-img1 txt-center p-lr-0 p-tb-0 contact-bg title-height">
+      <h2 class="ltext-201 cl2 p-t-0 p-b-0 respon1" style="color: black">
+        Checkout Form
+      </h2>
+    </section>
     <section class="bg0 p-t-20 p-b-20 contact-bg">
       <div class="container">
         <div class="flex-w flex-tr">
           <div
-            class="size-auto bor10 p-lr-70 p-t-55 p-b-70 p-lr-15-lg w-full-md"
+            class="size-auto bor10 p-lr-30 p-t-55 p-b-30 p-lr-15-lg w-full-md"
           >
-           	<div class="contact-card">
+            <div class="contact-card">
+              <form
+                class="checkout-form"
+                action="{{url_for('check_out')}}"
+                ,
+                method="POST"
+              >
+                <div class="input-group">
+                  <input
+                    type="text"
+                    name="fullname"
+                    placeholder=" "
+                    required
+                    min="2"
+                  />
+                  <label>Full Name</label>
+                </div>
 
-				<form class="checkout-form" action="{{url_for('check_out')}}", method="POST">
+                <div class="input-group">
+                  <input
+                    type="tel"
+                    name="phone"
+                    placeholder=" "
+                    required
+                    pattern="[0-9]{11}"
+                    oninvalid="
+                      this.setCustomValidity('Please enter Valid Number')
+                    "
+                    oninput="this.setCustomValidity('')"
+                  />
+                  <label>Phone Number</label>
+                </div>
+                <div class="input-group">
+                  <input type="tel" name="second-phone" placeholder=" " />
+                  <label>Another Phone Number (optional)</label>
+                </div>
 
-					<div class="input-group">
-						<input type="text" name="fullname" placeholder=" " required min="2">
-						<label>Full Name</label>
-					</div>
+                <div class="input-group">
+                  <select name="city" id="city-select" required dir="auto">
+                    <option value="" disabled selected>
+                      Select your city (اختر مدينتك)
+                    </option>
+                    {% for sp in shipping_prices %}
+                    <option value="{{ sp.city }}" data-price="{{ sp.price }}">
+                      {{ sp.city }}
+                    </option>
+                    {% endfor %}
+                  </select>
+                  <label
+                    style="
+                      top: -7px;
+                      font-size: 12px;
+                      color: #717fe0;
+                      z-index: 1;
+                      pointer-events: none;
+                      background: white;
+                    "
+                    >City</label
+                  >
+                </div>
 
-					<div class="input-group">
-						<input type="tel" name="phone" placeholder=" " required pattern="[0-9]{11}" oninvalid="this.setCustomValidity('Please enter Valid Number')" 
-								oninput="this.setCustomValidity('')">
-						<label>Phone Number</label>
-					</div>
-					<div class="input-group">
-						<input type="tel" name="second-phone" placeholder=" ">
-						<label>Another Phone Number (optional)</label>
-					</div>
+                <div class="input-group">
+                  <input type="text" name="adress" placeholder=" " required />
+                  <label>Adress</label>
+                </div>
 
-					<div class="input-group">
-						<input type="text" name="city" placeholder=" " required>
-						<label>City</label>
-					</div>
+                <div class="input-group">
+                  <textarea name="msg" rows="4" placeholder=" "></textarea>
+                  <label>Message</label>
+                </div>
 
-					<div class="input-group">
-						<input type="text" name="adress" placeholder=" " required>
-						<label>Adress</label>
-					</div>
+                <!-- ORDER SUMMARY -->
+                <div class="summary-box">
+                  <div class="summary-row">
+                    <span class="summary-label">Items Count:</span>
+                    <span class="summary-value">{{ items_num }}</span>
+                  </div>
 
-					<div class="input-group">
-						<textarea name="msg" rows="4" placeholder=" "></textarea>
-						<label>Message</label>
-					</div>
-					{% if items_num and items_num >= 2 and total_price %}
-						<p style="color: red; font-size: 2rem; text-align: right;">
-						يوجد خصم 50 جنيه اجمالي المبلغ: {{ total_price - 50 }} جنيه
-						</p>
-					{% endif %}
-					<button type="submit" class="submit-btn	stext-101">
-						Submit
-					</button>
+                  {% if items_num and items_num >= 2 %}
+                  <div class="discount-notice">يوجد خصم 50 جنيه</div>
+                  {% endif %}
 
-				</form>
-			</div>
+                  <div class="summary-row">
+                    <span class="summary-label">Price without shipping:</span>
+                    <span
+                      class="summary-value"
+                      id="subtotal"
+                      data-base="{% if items_num and items_num >= 2 %}{{ total_price - 50 }}{% else %}{{ total_price }}{% endif %}"
+                    >
+                      {% if items_num and items_num >= 2 %}{{ total_price - 50
+                      }}{% else %}{{ total_price }}{% endif %} E£
+                    </span>
+                  </div>
 
+                  <div class="summary-row">
+                    <span class="summary-label">Shipping price:</span>
+                    <span
+                      class="summary-value"
+                      id="shipping-display"
+                      style="color: #ea5455"
+                      >---</span
+                    >
+                  </div>
+
+                  <div class="summary-total-row">
+                    <span class="summary-total-label">Total price:</span>
+                    <span class="summary-total-value" id="final-total"
+                      >{% if items_num and items_num >= 2 %}{{ total_price - 50
+                      }}{% else %}{{ total_price }}{% endif %} E£</span
+                    >
+                  </div>
+                </div>
+
+                <!-- PAYMENT METHOD -->
+                <div class="payment-method-box">
+                  <div class="payment-title">Method of Payment:</div>
+                  <div class="payment-value">
+                    <span>Cash On Delivery</span>
+                    <i class="fa fa-money"></i>
+                  </div>
+                </div>
+
+                <button type="submit" class="submit-btn stext-101 mt-4">
+                  Finish Order
+                </button>
+              </form>
+            </div>
           </div>
         </div>
       </div>
@@ -361,6 +570,25 @@
     </script>
 
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+      crossorigin="anonymous"
+    ></script>
+
+    <script>
+      $(document).ready(function () {
+        $("#city-select").on("change", function () {
+          var selectedOption = $(this).find("option:selected");
+          var shippingPrice = parseInt(selectedOption.data("price")) || 0;
+
+          var subtotal = parseInt($("#subtotal").data("base")) || 0;
+          var total = subtotal + shippingPrice;
+
+          $("#shipping-display").text("+ " + shippingPrice + " E£");
+          $("#final-total").text(total + " E£");
+        });
+      });
+    </script>
   </body>
 </html>
