@@ -26,7 +26,6 @@ app.register_blueprint(analytics_bp)
 login_manager = LoginManager(app)
 app.secret_key='abdomohamed'
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres.wmkfvadfdnjpmdurnudb:abdo-mohamed20@aws-1-eu-west-2.pooler.supabase.com:6543/postgres"
-# app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres.lxelklwgirketewzssix:abdo-mohamed20@aws-1-eu-west-1.pooler.supabase.com:6543/postgres"   #delete it
 SUPABASE_URL = "https://wmkfvadfdnjpmdurnudb.supabase.co"
 SUPABASE_KEY = "sb_publishable_aCVfYc4k1oCSUl3twmfjVA_iSlR3gy6"
 BUCKET = "items"
