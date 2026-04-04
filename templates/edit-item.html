@@ -91,8 +91,8 @@
           transform 0.5s,
           opacity 0.3s;
         transform-style: preserve-3d;
+        pointer-events: auto;
       }
-
 
       /* DELETE OVERLAY */
       .thumb-wrapper::after {
@@ -110,10 +110,13 @@
         border: 1px solid #ddd;
         margin-bottom: 20px;
         transition: 0.3s;
+        box-sizing: border-box;
+        font-family: "Cairo", sans-serif;
       }
       .input:focus {
         border-color: #667eea;
         box-shadow: 0 0 0 6px rgba(102, 126, 234, 0.15);
+        outline: none;
       }
 
       /* FILE UPLOAD */
@@ -144,6 +147,7 @@
         font-size: 16px;
         cursor: pointer;
         transition: 0.4s ease;
+        font-family: "Cairo", sans-serif;
       }
       .save-btn:hover {
         transform: translateY(-3px);
@@ -161,9 +165,6 @@
           transform: translateY(0);
         }
       }
-      .thumb-wrapper {
-        position: relative;
-      }
 
       .delete-btn-img {
         position: absolute;
@@ -177,12 +178,151 @@
         color: white;
         font-size: 14px;
         cursor: pointer;
-        z-index: 999; /* 🔥 VERY IMPORTANT */
+        z-index: 999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
       }
 
-      /* prevent image from blocking clicks */
-      .thumb-wrapper img {
-        pointer-events: auto;
+      /* ===== COLORS SECTION ===== */
+      .section-label {
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: #4a5568;
+        margin-bottom: 10px;
+        display: block;
+        letter-spacing: 0.03em;
+      }
+
+      .colors-wrapper {
+        background: #f8f9ff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        padding: 16px;
+        margin-bottom: 20px;
+      }
+
+      .color-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        min-height: 40px;
+        margin-bottom: 12px;
+      }
+
+      .color-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: white;
+        border: 1.5px solid #c7d2fe;
+        border-radius: 999px;
+        padding: 6px 14px;
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: #3730a3;
+        transition: 0.2s;
+      }
+
+      .color-tag:hover {
+        background: #eef2ff;
+        border-color: #818cf8;
+      }
+
+      .color-tag .color-dot {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        border: 1.5px solid rgba(0,0,0,0.1);
+        flex-shrink: 0;
+      }
+
+      .color-tag .remove-color {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: #e53e3e;
+        font-size: 14px;
+        padding: 0;
+        line-height: 1;
+        display: flex;
+        align-items: center;
+        font-weight: 700;
+        transition: 0.2s;
+      }
+
+      .color-tag .remove-color:hover {
+        color: #c53030;
+        transform: scale(1.2);
+      }
+
+      .add-color-row {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .color-input-group {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex: 1;
+        min-width: 180px;
+        background: white;
+        border: 1.5px solid #c7d2fe;
+        border-radius: 14px;
+        padding: 8px 14px;
+        transition: 0.3s;
+      }
+      .color-input-group:focus-within {
+        border-color: #667eea;
+        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.12);
+      }
+
+      .color-input-group input[type="color"] {
+        width: 32px;
+        height: 32px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        padding: 2px;
+        background: none;
+      }
+
+      .color-input-group input[type="text"] {
+        flex: 1;
+        border: none;
+        outline: none;
+        font-family: "Cairo", sans-serif;
+        font-size: 0.95rem;
+        color: #2d3748;
+        background: transparent;
+      }
+
+      .add-color-btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 14px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        font-weight: 700;
+        font-size: 0.92rem;
+        cursor: pointer;
+        transition: 0.3s;
+        font-family: "Cairo", sans-serif;
+        white-space: nowrap;
+      }
+      .add-color-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.35);
+      }
+
+      .no-colors-msg {
+        color: #a0aec0;
+        font-size: 0.88rem;
+        font-style: italic;
       }
     </style>
   </head>
@@ -227,55 +367,60 @@
               class="input"
               value="{{item.name}}"
               placeholder="Product Name"
-              style="
-                font-family: 'Cairo', sans-serif;
-                text-align: right;
-                font-size: 3 rem;
-              "
+              style="text-align: right;"
             />
             <input
               id="price"
               class="input"
               value="{{item.price}}"
               placeholder="Current Price"
-              style="
-                font-family: 'Cairo', sans-serif;
-                font-size: 1.2rem;
-              "
             />
             <input
               id="old_price"
               class="input"
               value="{{item.old_price if item.old_price else ''}}"
               placeholder="Old Price (Optional)"
-              style="
-                font-family: 'Cairo', sans-serif;
-                font-size: 1.2rem;
-              "
             />
             <input
               id="discount_label"
               class="input"
               value="{{item.discount_label if item.discount_label else ''}}"
               placeholder="Discount Label (e.g. 20% OFF)"
-              style="
-                font-family: 'Cairo', sans-serif;
-                font-size: 1.2rem;
-                text-align: right;
-              "
+              style="text-align: right;"
             />
             <textarea
               id="desc"
               class="input"
-              rows="5"
-              style="
-                font-family: 'Cairo', sans-serif;
-                text-align: right;
-                font-size: 3 rem;
-              "
-            >
-{{item.description}}</textarea
-            >
+              rows="4"
+              style="text-align: right; resize: vertical;"
+            >{{item.description}}</textarea>
+
+            <!-- ===== COLORS SECTION ===== -->
+            <span class="section-label">🎨 Product Colors</span>
+            <div class="colors-wrapper">
+              <div class="color-tags" id="colorTags">
+                {% if item.item_colors %}
+                  {% for c in item.item_colors %}
+                  <span class="color-tag" data-color-id="{{c.id}}" data-color-value="{{c.color}}">
+                    <span class="color-dot js-color-dot" data-bg-color="{{c.color}}"></span>
+                    {{ c.color }}
+                    <button class="remove-color" onclick="removeColor(this, '{{c.id}}', true)">✕</button>
+                  </span>
+                  {% endfor %}
+                {% else %}
+                  <span class="no-colors-msg" id="noColorsMsg">No colors added yet.</span>
+                {% endif %}
+              </div>
+
+              <div class="add-color-row">
+                <div class="color-input-group">
+                  <input type="text" id="colorText" placeholder="e.g. Black, Red, #FF5733" />
+                </div>
+                <button class="add-color-btn" onclick="addColor()">+ Add Color</button>
+              </div>
+            </div>
+            <!-- ========================= -->
+
             <button class="save-btn" onclick="saveEdit('{{item.id}}')">
               Save Changes
             </button>
@@ -286,22 +431,90 @@
 
     <script>
       let addedImagesData = [];
+      let colorsToDelete = [];   // IDs of existing colors to delete from DB
+      let newColors = [];        // New color values to add
+
+      // Sync logic removed as picker is gone
+
+      // Initialize color dots on load
+      function initColorDots() {
+        document.querySelectorAll(".js-color-dot").forEach(dot => {
+          const color = dot.dataset.bgColor;
+          if (color) dot.style.backgroundColor = color;
+        });
+      }
+      window.addEventListener('DOMContentLoaded', initColorDots);
 
       function setMain(src) {
         document.getElementById("mainImage").src = src;
       }
 
       function deleteOldImage(id, el) {
-        console.log("CLICK WORKED 🔥", id);
-
-        fetch(`/admin/delete-image/${id}`, {
-          method: "POST",
-        })
+        fetch(`/admin/delete-image/${id}`, { method: "POST" })
           .then((res) => res.json())
           .then(() => {
             el.closest(".thumb-wrapper").remove();
           });
       }
+
+      // Remove a color tag
+      // isExisting = true means it's from the DB (has a real color ID)
+      // isExisting = false means it was just added in this session (new)
+      function removeColor(btn, colorId, isExisting) {
+        const tag = btn.closest('.color-tag');
+        if (isExisting) {
+          colorsToDelete.push(colorId);
+        } else {
+          // Remove from newColors array by value
+          const val = tag.dataset.colorValue;
+          newColors = newColors.filter(c => c !== val);
+        }
+        tag.remove();
+
+        const tagsContainer = document.getElementById('colorTags');
+        if (tagsContainer.children.length === 0) {
+          let msg = document.createElement('span');
+          msg.className = 'no-colors-msg';
+          msg.id = 'noColorsMsg';
+          msg.textContent = 'No colors added yet.';
+          tagsContainer.appendChild(msg);
+        }
+      }
+
+      function addColor() {
+        const textInput  = document.getElementById('colorText');
+        let val = textInput.value.trim();
+        if (!val) return;
+
+        // Remove "no colors" placeholder if present
+        const noMsg = document.getElementById('noColorsMsg');
+        if (noMsg) noMsg.remove();
+
+        newColors.push(val);
+
+        const tagsContainer = document.getElementById('colorTags');
+        const tag = document.createElement('span');
+        tag.className = 'color-tag';
+        tag.dataset.colorValue = val;
+
+        // Try to detect if it's a valid CSS color for the dot
+        const dotColor = val.startsWith('#') || val.startsWith('rgb') ? val : val;
+
+        tag.innerHTML = `
+          <span class="color-dot js-color-dot" data-bg-color="${dotColor}"></span>
+          ${val}
+          <button class="remove-color" onclick="removeColor(this, '', false)">✕</button>
+        `;
+        tagsContainer.appendChild(tag);
+        initColorDots(); // Re-init to apply background to the new dot
+
+        textInput.value = '';
+      }
+
+      // Allow Enter key to add color
+      document.getElementById('colorText').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') { e.preventDefault(); addColor(); }
+      });
 
       document
         .getElementById("newImages")
@@ -314,7 +527,6 @@
 
               let div = document.createElement("div");
               div.className = "thumb-wrapper";
-              // Add a way to identify and remove this image from addedImagesData
               div.dataset.index = addedImagesData.length - 1;
               div.innerHTML = `
                 <img src="${imageData}">
@@ -334,26 +546,21 @@
 
       function removeNewImage(btn) {
         const wrapper = btn.closest(".thumb-wrapper");
-        const index = parseInt(wrapper.dataset.index);
-        // We can't easily splice by index if multiple are removed, 
-        // but for simplicity we'll just filter out this specific base64 string
         const src = wrapper.querySelector("img").src;
         addedImagesData = addedImagesData.filter((img) => img !== src);
         wrapper.remove();
       }
 
       function saveEdit(id) {
-        const nameInput = document.getElementById("n");
-        const priceInput = document.getElementById("price");
-        const descInput = document.getElementById("desc");
-
         let data = {
-          n: nameInput.value,
-          price: priceInput.value,
+          n: document.getElementById("n").value,
+          price: document.getElementById("price").value,
           old_price: document.getElementById("old_price").value,
           discount_label: document.getElementById("discount_label").value,
-          description: descInput.value,
+          description: document.getElementById("desc").value,
           images: addedImagesData,
+          new_colors: newColors,
+          delete_color_ids: colorsToDelete,
         };
 
         fetch(`/admin/update-item/${id}`, {

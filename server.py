@@ -92,7 +92,7 @@ class Cart(db.Model):
     name:Mapped[str] = mapped_column(String(150), nullable=False)
     price:Mapped[int] = mapped_column(Integer, nullable=False)
     amount:Mapped[int] = mapped_column(Integer, nullable=False)
-    size:Mapped[str] = mapped_column(String(150), nullable=False)
+    size:Mapped[str] = mapped_column(String(150), nullable=True)
     session_id:Mapped[str] = mapped_column(String(100), nullable=True)  # Guest session tracking
     order_id:Mapped[str] = mapped_column(Integer, ForeignKey('order.id'), nullable=True)
     
@@ -633,6 +633,20 @@ def update_item(id):
     item.description = description
     item.old_price = int(old_price) if old_price else None
     item.discount_label = discount_label
+
+    # Handle color deletions
+    delete_color_ids = data.get("delete_color_ids", [])
+    for color_id in delete_color_ids:
+        color_to_delete = ItemColor.query.get(int(color_id))
+        if color_to_delete and color_to_delete.item_id == id:
+            db.session.delete(color_to_delete)
+
+    # Handle new colors
+    new_colors = data.get("new_colors", [])
+    for color_val in new_colors:
+        if color_val and color_val.strip():
+            new_color = ItemColor(color=color_val.strip(), item_id=id)
+            db.session.add(new_color)
 
     # handle images here if needed
     image_links = []

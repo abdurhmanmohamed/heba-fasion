@@ -456,10 +456,13 @@
           var color = $("#selected-color").val();
           var size = $("#size").val();
 
+          /* Size selection is now optional */
+          /*
           if (size === "Choose a size") {
             swal("Please choose a size", "", "error");
             return;
           }
+          */
 
           if (!color && $(".js-color-chip-detail").length > 0) {
             swal("Please choose a color", "", "error");
