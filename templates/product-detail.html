@@ -179,16 +179,7 @@
 
                 <div class="size-chips-wrap" id="size-chips">
                   <button class="size-chip js-size-chip" data-size="55-65 Kg">
-                    55-65 Kg
-                  </button>
-                  <button class="size-chip js-size-chip" data-size="65-75 Kg">
-                    65-75 Kg
-                  </button>
-                  <button class="size-chip js-size-chip" data-size="75-85 Kg">
-                    75-85 Kg
-                  </button>
-                  <button class="size-chip js-size-chip" data-size="85-95 Kg">
-                    85-95 Kg
+                    One Size Up till 95 Kg
                   </button>
                 </div>
                 <input type="hidden" id="size" value="Choose a size" />
@@ -305,10 +296,15 @@
 
         <div class="related-scroll-track">
           {% for relate in related_items %}
-          <a href="{{ url_for('product_detail', item_id=relate.id) }}" class="relate-card">
+          <a
+            href="{{ url_for('product_detail', item_id=relate.id) }}"
+            class="relate-card"
+          >
             <div class="relate-card-img">
               {% if relate.discount_label %}
-              <div class="relate-discount-badge">{{ relate.discount_label }}</div>
+              <div class="relate-discount-badge">
+                {{ relate.discount_label }}
+              </div>
               {% endif %}
               <img
                 src="{{ relate.item_imgs[0].img if relate.item_imgs|length > 0 else url_for('static', filename='images/blog-06.jpg') }}"
