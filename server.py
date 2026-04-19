@@ -21,14 +21,14 @@ from sqlalchemy.orm import joinedload
 app= Flask(__name__)
 Compress(app)
 cache = Cache(app, config={'CACHE_TYPE': 'SimpleCache', 'CACHE_DEFAULT_TIMEOUT': 300})
-
+import os
 app.register_blueprint(analytics_bp)
 login_manager = LoginManager(app)
 app.secret_key='abdomohamed'
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres.wmkfvadfdnjpmdurnudb:abdo-mohamed20@aws-1-eu-west-2.pooler.supabase.com:6543/postgres"
-SUPABASE_URL = "https://wmkfvadfdnjpmdurnudb.supabase.co"
-SUPABASE_KEY = "sb_publishable_aCVfYc4k1oCSUl3twmfjVA_iSlR3gy6"
-BUCKET = "items"
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("SQLALCHEMY_DATABASE_URI")
+SUPABASE_URL = os.environ.get("SUPABASE_URL")
+SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
+BUCKET = os.environ.get("BUCKET")
 login_manager.login_view = 'login'
 class Base(DeclarativeBase):
     pass
@@ -680,4 +680,4 @@ def update_item(id):
 
     return jsonify({"status": "success"})
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
