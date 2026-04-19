@@ -5,6 +5,40 @@
     <title>Edit Product</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <script>
+      !(function (f, b, e, v, n, t, s) {
+        if (f.fbq) return;
+        n = f.fbq = function () {
+          n.callMethod
+            ? n.callMethod.apply(n, arguments)
+            : n.queue.push(arguments);
+        };
+        if (!f._fbq) f._fbq = n;
+        n.push = n;
+        n.loaded = !0;
+        n.version = "2.0";
+        n.queue = [];
+        t = b.createElement(e);
+        t.async = !0;
+        t.src = v;
+        s = b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t, s);
+      })(
+        window,
+        document,
+        "script",
+        "https://connect.facebook.net/en_US/fbevents.js",
+      );
+      fbq("init", "2050250489170556");
+      fbq("track", "PageView");
+    </script>
+    <noscript
+      ><img
+        height="1"
+        width="1"
+        style="display: none"
+        src="https://www.facebook.com/tr?id=2050250489170556&ev=PageView&noscript=1"
+    /></noscript>
     <link
       href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&display=swap"
       rel="stylesheet"
@@ -234,7 +268,7 @@
         width: 14px;
         height: 14px;
         border-radius: 50%;
-        border: 1.5px solid rgba(0,0,0,0.1);
+        border: 1.5px solid rgba(0, 0, 0, 0.1);
         flex-shrink: 0;
       }
 
@@ -367,7 +401,7 @@
               class="input"
               value="{{item.name}}"
               placeholder="Product Name"
-              style="text-align: right;"
+              style="text-align: right"
             />
             <input
               id="price"
@@ -386,37 +420,57 @@
               class="input"
               value="{{item.discount_label if item.discount_label else ''}}"
               placeholder="Discount Label (e.g. 20% OFF)"
-              style="text-align: right;"
+              style="text-align: right"
             />
             <textarea
               id="desc"
               class="input"
               rows="4"
-              style="text-align: right; resize: vertical;"
-            >{{item.description}}</textarea>
+              style="text-align: right; resize: vertical"
+            >
+{{item.description}}</textarea
+            >
 
             <!-- ===== COLORS SECTION ===== -->
             <span class="section-label">🎨 Product Colors</span>
             <div class="colors-wrapper">
               <div class="color-tags" id="colorTags">
-                {% if item.item_colors %}
-                  {% for c in item.item_colors %}
-                  <span class="color-tag" data-color-id="{{c.id}}" data-color-value="{{c.color}}">
-                    <span class="color-dot js-color-dot" data-bg-color="{{c.color}}"></span>
-                    {{ c.color }}
-                    <button class="remove-color" onclick="removeColor(this, '{{c.id}}', true)">✕</button>
-                  </span>
-                  {% endfor %}
-                {% else %}
-                  <span class="no-colors-msg" id="noColorsMsg">No colors added yet.</span>
+                {% if item.item_colors %} {% for c in item.item_colors %}
+                <span
+                  class="color-tag"
+                  data-color-id="{{c.id}}"
+                  data-color-value="{{c.color}}"
+                >
+                  <span
+                    class="color-dot js-color-dot"
+                    data-bg-color="{{c.color}}"
+                  ></span>
+                  {{ c.color }}
+                  <button
+                    class="remove-color"
+                    onclick="removeColor(this, '{{c.id}}', true)"
+                  >
+                    ✕
+                  </button>
+                </span>
+                {% endfor %} {% else %}
+                <span class="no-colors-msg" id="noColorsMsg"
+                  >No colors added yet.</span
+                >
                 {% endif %}
               </div>
 
               <div class="add-color-row">
                 <div class="color-input-group">
-                  <input type="text" id="colorText" placeholder="e.g. Black, Red, #FF5733" />
+                  <input
+                    type="text"
+                    id="colorText"
+                    placeholder="e.g. Black, Red, #FF5733"
+                  />
                 </div>
-                <button class="add-color-btn" onclick="addColor()">+ Add Color</button>
+                <button class="add-color-btn" onclick="addColor()">
+                  + Add Color
+                </button>
               </div>
             </div>
             <!-- ========================= -->
@@ -431,19 +485,19 @@
 
     <script>
       let addedImagesData = [];
-      let colorsToDelete = [];   // IDs of existing colors to delete from DB
-      let newColors = [];        // New color values to add
+      let colorsToDelete = []; // IDs of existing colors to delete from DB
+      let newColors = []; // New color values to add
 
       // Sync logic removed as picker is gone
 
       // Initialize color dots on load
       function initColorDots() {
-        document.querySelectorAll(".js-color-dot").forEach(dot => {
+        document.querySelectorAll(".js-color-dot").forEach((dot) => {
           const color = dot.dataset.bgColor;
           if (color) dot.style.backgroundColor = color;
         });
       }
-      window.addEventListener('DOMContentLoaded', initColorDots);
+      window.addEventListener("DOMContentLoaded", initColorDots);
 
       function setMain(src) {
         document.getElementById("mainImage").src = src;
@@ -461,44 +515,45 @@
       // isExisting = true means it's from the DB (has a real color ID)
       // isExisting = false means it was just added in this session (new)
       function removeColor(btn, colorId, isExisting) {
-        const tag = btn.closest('.color-tag');
+        const tag = btn.closest(".color-tag");
         if (isExisting) {
           colorsToDelete.push(colorId);
         } else {
           // Remove from newColors array by value
           const val = tag.dataset.colorValue;
-          newColors = newColors.filter(c => c !== val);
+          newColors = newColors.filter((c) => c !== val);
         }
         tag.remove();
 
-        const tagsContainer = document.getElementById('colorTags');
+        const tagsContainer = document.getElementById("colorTags");
         if (tagsContainer.children.length === 0) {
-          let msg = document.createElement('span');
-          msg.className = 'no-colors-msg';
-          msg.id = 'noColorsMsg';
-          msg.textContent = 'No colors added yet.';
+          let msg = document.createElement("span");
+          msg.className = "no-colors-msg";
+          msg.id = "noColorsMsg";
+          msg.textContent = "No colors added yet.";
           tagsContainer.appendChild(msg);
         }
       }
 
       function addColor() {
-        const textInput  = document.getElementById('colorText');
+        const textInput = document.getElementById("colorText");
         let val = textInput.value.trim();
         if (!val) return;
 
         // Remove "no colors" placeholder if present
-        const noMsg = document.getElementById('noColorsMsg');
+        const noMsg = document.getElementById("noColorsMsg");
         if (noMsg) noMsg.remove();
 
         newColors.push(val);
 
-        const tagsContainer = document.getElementById('colorTags');
-        const tag = document.createElement('span');
-        tag.className = 'color-tag';
+        const tagsContainer = document.getElementById("colorTags");
+        const tag = document.createElement("span");
+        tag.className = "color-tag";
         tag.dataset.colorValue = val;
 
         // Try to detect if it's a valid CSS color for the dot
-        const dotColor = val.startsWith('#') || val.startsWith('rgb') ? val : val;
+        const dotColor =
+          val.startsWith("#") || val.startsWith("rgb") ? val : val;
 
         tag.innerHTML = `
           <span class="color-dot js-color-dot" data-bg-color="${dotColor}"></span>
@@ -508,13 +563,18 @@
         tagsContainer.appendChild(tag);
         initColorDots(); // Re-init to apply background to the new dot
 
-        textInput.value = '';
+        textInput.value = "";
       }
 
       // Allow Enter key to add color
-      document.getElementById('colorText').addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') { e.preventDefault(); addColor(); }
-      });
+      document
+        .getElementById("colorText")
+        .addEventListener("keydown", function (e) {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            addColor();
+          }
+        });
 
       document
         .getElementById("newImages")
