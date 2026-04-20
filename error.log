@@ -1,0 +1,30 @@
+2026-04-19 19:30:50,163 INFO: server.py initialization started
+Models imported successfully
+2026-04-19 19:34:57,557 INFO: server.py initialization started
+Starting migration...
+SQLite schema created successfully using models.
+Migrating table: admin...
+Found 2 records in admin
+Error during migration: (sqlite3.OperationalError) no such table: admin
+[SQL: SELECT admin.id AS admin_id, admin.name AS admin_name, admin.number AS admin_number, admin.password AS admin_password 
+FROM admin 
+WHERE admin.id = ?]
+[parameters: (1,)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+Migration complete!
+2026-04-19 19:37:09,929 INFO: server.py initialization started
+Starting migration...
+SQLite schema created successfully using models.
+Migrating table: admin...
+Found 2 records in admin
+Error during migration: (sqlite3.OperationalError) no such table: admin
+[SQL: SELECT admin.id AS admin_id, admin.name AS admin_name, admin.number AS admin_number, admin.password AS admin_password 
+FROM admin 
+WHERE admin.id = ?]
+[parameters: (1,)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+Migration complete!
+2026-04-19 19:39:52,431 INFO: server.py initialization started
+2026-04-19 19:53:24,099 WARNING: Note on migration: (sqlite3.OperationalError) duplicate column name: total_price
+[SQL: ALTER TABLE "order" ADD COLUMN total_price INTEGER]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)

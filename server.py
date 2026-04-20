@@ -1,35 +1,52 @@
-from datetime import datetime
+import os
+import sys
+import logging
+
+# Configure logging to catch server errors
+log_file = os.path.join(os.path.dirname(__file__), 'error.log')
+sys.stdout = sys.stderr = open(log_file, 'a', buffering=1, encoding='utf-8')
+logging.basicConfig(filename=log_file, level=logging.INFO, 
+                    format='%(asctime)s %(levelname)s: %(message)s')
+
+
 # server.py
 
-import base64
-import uuid
-import imghdr
-import requests
-from flask import Flask, flash,session
-from flask import render_template, url_for, redirect, request,jsonify
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import mapped_column, Mapped,DeclarativeBase,relationship
-from sqlalchemy import DateTime, String, Integer,ForeignKey
-from werkzeug.security import check_password_hash, generate_password_hash
-
-from flask_login import LoginManager,UserMixin,login_user, login_required,current_user,logout_user
-from analytics_blueprint import analytics_bp
-from flask_compress import Compress
-from flask_caching import Cache
-from sqlalchemy.orm import joinedload
+try:
+    from datetime import datetime
+    import base64
+    import uuid
+    import imghdr
+    import requests
+    from flask import Flask, flash, session, render_template, url_for, redirect, request, jsonify
+    from flask_sqlalchemy import SQLAlchemy
+    from sqlalchemy.orm import mapped_column, Mapped, DeclarativeBase, relationship, joinedload
+    from sqlalchemy import DateTime, String, Integer, ForeignKey
+    from werkzeug.security import check_password_hash, generate_password_hash
+    from flask_login import LoginManager, UserMixin, login_user, login_required, current_user, logout_user
+    from analytics_blueprint import analytics_bp
+    from flask_compress import Compress
+    from flask_caching import Cache
+except ImportError as e:
+    logging.error(f"Missing dependency: {e.name}")
+    raise e
 
 app= Flask(__name__)
 Compress(app)
 cache = Cache(app, config={'CACHE_TYPE': 'SimpleCache', 'CACHE_DEFAULT_TIMEOUT': 300})
-import os
 app.register_blueprint(analytics_bp)
 login_manager = LoginManager(app)
-app.secret_key='abdomohamed'
-app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("SQLALCHEMY_DATABASE_URI")
-SUPABASE_URL = os.environ.get("SUPABASE_URL")
-SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
-BUCKET = os.environ.get("BUCKET")
+
+# --- Normal Configuration (Local & Hardcoded) ---
+app.secret_key = 'abdomohamed'
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
+
+SUPABASE_URL = "https://wmkfvadfdnjpmdurnudb.supabase.co"
+SUPABASE_KEY = "sb_publishable_aCVfYc4k1oCSUl3twmfjVA_iSlR3gy6"
+BUCKET = "items"
+
 login_manager.login_view = 'login'
+# -----------------------------------------------
+
 class Base(DeclarativeBase):
     pass
 
@@ -115,15 +132,21 @@ class ShippingPrice(db.Model):
 
 
 
-with app.app_context():
-    db.create_all()
-    try:
-        from sqlalchemy import text
-        db.session.execute(text('ALTER TABLE "order" ADD COLUMN total_price INTEGER'))
-        db.session.commit()
-        print("Successfully added total_price column to order table!")
-    except Exception as e:
-        db.session.rollback()
+try:
+    with app.app_context():
+        db.create_all()
+        try:
+            from sqlalchemy import text
+            db.session.execute(text('ALTER TABLE "order" ADD COLUMN total_price INTEGER'))
+            db.session.commit()
+            logging.info("Successfully checked/added total_price column to order table!")
+        except Exception as e:
+            db.session.rollback()
+            # If the column already exists, this is fine
+            if "already exists" not in str(e).lower():
+                logging.warning(f"Note on migration: {e}")
+except Exception as e:
+    logging.exception("Critical error during database initialization")
 
 @login_manager.user_loader
 def userloader(user_id):
@@ -131,59 +154,80 @@ def userloader(user_id):
 
 
 @app.route('/')
-@cache.cached(timeout=60, query_string=True)
+# @cache.cached(timeout=60, query_string=True)
 def home():
-    keyword = request.args.get('search')
-    if keyword:
-        items_list = ItemDetails.query.options(joinedload(ItemDetails.item_imgs)).filter(ItemDetails.visability==1,ItemDetails.name.ilike(f"%{keyword}%")).all()
-    else:
-        items_list = db.session.query(ItemDetails).options(joinedload(ItemDetails.item_imgs)).filter(ItemDetails.visability==1).all()
+    try:
+        logging.info("Accessing home route")
+        keyword = request.args.get('search')
+        if keyword:
+            items_list = ItemDetails.query.options(joinedload(ItemDetails.item_imgs)).filter(ItemDetails.visability==1,ItemDetails.name.ilike(f"%{keyword}%")).all()
+        else:
+            items_list = db.session.query(ItemDetails).options(joinedload(ItemDetails.item_imgs)).filter(ItemDetails.visability==1).all()
 
-    # Calculate Top Selling (Items with most total amount in orders)
-    from sqlalchemy import func, text
-    top_selling_names = db.session.query(
-        Cart.name,
-        func.sum(Cart.amount).label('total_sold')
-    ).filter(Cart.order_id.isnot(None))\
-     .group_by(Cart.name)\
-     .order_by(text('total_sold DESC'))\
-     .limit(10).all()
-    
-    top_selling_list = [item[0] for item in top_selling_names]
-    
-    return render_template('index.html', items = items_list, top_selling = top_selling_list)
+        # Calculate Top Selling (Items with most total amount in orders)
+        from sqlalchemy import func, text
+        try:
+            top_selling_names = db.session.query(
+                Cart.name,
+                func.sum(Cart.amount).label('total_sold')
+            ).filter(Cart.order_id.isnot(None))\
+             .group_by(Cart.name)\
+             .order_by(text('total_sold DESC'))\
+             .limit(10).all()
+            top_selling_list = [item[0] for item in top_selling_names]
+        except Exception as e:
+            logging.error(f"Error calculating top selling: {e}")
+            top_selling_list = []
+        
+        return render_template('index.html', items = items_list, top_selling = top_selling_list)
+    except Exception as e:
+        logging.exception("Error in home route")
+        return f"An error occurred: {e}", 500
 
 
 @app.route('/shoping')
-@cache.cached(timeout=60)
+# @cache.cached(timeout=60)
 def shop():
-    items = db.session.query(ItemDetails).options(joinedload(ItemDetails.item_imgs)).filter(ItemDetails.visability==1).all()
-    
-    # Calculate Top Selling
-    from sqlalchemy import func, text
-    top_selling_names = db.session.query(
-        Cart.name,
-        func.sum(Cart.amount).label('total_sold')
-    ).filter(Cart.order_id.isnot(None))\
-     .group_by(Cart.name)\
-     .order_by(text('total_sold DESC'))\
-     .limit(10).all()
-    
-    top_selling_list = [item[0] for item in top_selling_names]
+    try:
+        logging.info("Accessing shop route")
+        items = db.session.query(ItemDetails).options(joinedload(ItemDetails.item_imgs)).filter(ItemDetails.visability==1).all()
+        
+        # Calculate Top Selling
+        from sqlalchemy import func, text
+        try:
+            top_selling_names = db.session.query(
+                Cart.name,
+                func.sum(Cart.amount).label('total_sold')
+            ).filter(Cart.order_id.isnot(None))\
+             .group_by(Cart.name)\
+             .order_by(text('total_sold DESC'))\
+             .limit(10).all()
+            top_selling_list = [item[0] for item in top_selling_names]
+        except Exception as e:
+            logging.error(f"Error calculating top selling in shop: {e}")
+            top_selling_list = []
 
-    return render_template('shop.html', items = items, top_selling = top_selling_list)
+        return render_template('shop.html', items = items, top_selling = top_selling_list)
+    except Exception as e:
+        logging.exception("Error in shop route")
+        return f"An error occurred: {e}", 500
 
 @app.route('/product/<int:item_id>')
-@cache.cached(timeout=60)
+# @cache.cached(timeout=60)
 def product_detail(item_id):
-    item = db.get_or_404(ItemDetails, item_id)
-    
-    # Fetch related items (other visible items, excluding current)
-    related_items = ItemDetails.query.options(joinedload(ItemDetails.item_imgs))\
-        .filter(ItemDetails.visability == 1, ItemDetails.id != item_id)\
-        .limit(4).all()
-    
-    return render_template('product-detail.html', item=item, related_items=related_items)
+    try:
+        logging.info(f"Accessing product detail for item {item_id}")
+        item = db.get_or_404(ItemDetails, item_id)
+        
+        # Fetch related items (other visible items, excluding current)
+        related_items = ItemDetails.query.options(joinedload(ItemDetails.item_imgs))\
+            .filter(ItemDetails.visability == 1, ItemDetails.id != item_id)\
+            .limit(4).all()
+        
+        return render_template('product-detail.html', item=item, related_items=related_items)
+    except Exception as e:
+        logging.exception(f"Error in product_detail route for item {item_id}")
+        return f"An error occurred: {e}", 500
 
 @app.route('/shoping-cart')
 def shoping_cart():
